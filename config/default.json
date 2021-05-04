@@ -1,0 +1,24 @@
+{
+    "db": "mysql://root:asd123@localhost:3306/mydb",
+    "session": {
+        "secret": "change_me",
+        "resave": false,
+        "saveUninitialized": true,
+        "cookie": {
+            "secure": true
+        }
+    },
+    "httpServer": {
+        "port": 3002
+    },
+    "sequelizeRebuild": true,
+    "socketIo": {
+        "cors": {
+            "origin": "http://localhost:3000",
+            "methods": ["GET", "POST"]
+        }
+    },
+    "log": {
+        "level": "debug"
+    }
+}

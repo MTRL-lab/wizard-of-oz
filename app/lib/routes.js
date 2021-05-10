@@ -1,7 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
-
+import { db } from './db.js'
 import wrapper from './route_wrapper.js'
 import { Consent, Message } from '../models/index.js'
 
@@ -14,9 +14,31 @@ api.post('/agree/', wrapper((req) => {
 }))
 
 //display all messages
-api.get('/messages/', wrapper(() => {
-    return Message.findAll()
+api.get('/messages/', wrapper((req) => {
+
+    const session_id = req.query.session_id || 0;
+    return Message.findAll({
+            where: {
+                session_id
+            }
+        })
         .then(messages => messages.map(message => Message.toChatJson(message)))
+}))
+
+api.get('/sessions/', wrapper(() => {
+
+
+    const query = `SELECT session_id, count(*) as num, 
+    min(createdAt) as start, max(createdAt) as end ,
+    max(createdAt) - min(createdAt) as ra 
+    FROM Messages 
+    WHERE session_id !=""
+    GROUP BY session_id`;
+
+    return db.query(query)
+        .then(([results, ]) => {
+            return results
+        })
 }))
 
 api.post('/video/', wrapper((req) => {

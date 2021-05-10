@@ -7,17 +7,18 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const indexRoutes = [
   // { path: '/wizard/', component: Wizard },
-  { path: "/chat/", component: Chat },
-  { path: "/chatlog/", component: ChatLog },
-  { path: "/operator", component: Operator },
-  { path: "/", component: Welcome },
+  { path: "/chat/", component: Chat ,exact: true },
+  { path: "/chatlog/:session_id", component: ChatLog ,exact: false},
+  { path: "/chatlog/", component: ChatLog ,exact: false},
+  { path: "/operator", component: Operator ,exact: true },
+  { path: "/", component: Welcome  ,exact: true},
 ];
 
 const dom = (
   <Router>
     <Switch>
       {indexRoutes.map((prop, key) => {
-        return <Route path={prop.path} component={prop.component} key={key} />;
+        return <Route path={prop.path} component={prop.component} key={key} exact={prop.exact} />;
       })}
     </Switch>
   </Router>

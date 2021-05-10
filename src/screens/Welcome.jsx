@@ -13,7 +13,7 @@ class Welcome extends Component {
     answers: false,
     consent: false,
     name: "",
-    consent_html: <div></div>
+    consent_html: '<div></div>'
   };
 
   handleChange = (event) => {

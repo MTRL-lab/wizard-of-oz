@@ -35,6 +35,8 @@ app.use(express.urlencoded({ extended: true }))
 
 
 // serve static files
+app.use('/', express.static(path.join(path.resolve(''), 'build')))
+app.use('/', express.static(path.join(path.resolve(''), 'public')))
 app.use('/uploads', express.static(path.join(path.resolve(''), 'uploads')))
 
 // set up api routes

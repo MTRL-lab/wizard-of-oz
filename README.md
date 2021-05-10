@@ -43,7 +43,7 @@ Build the react code and start the web application.
 
 ```sh
 npm run build
-node wizard-of-oz.js
+npm start
 ```
 
 ## Development
@@ -63,7 +63,7 @@ node wizard-of-oz.js
 Run the React development server in parallel:
 
 ```
-npm start
+npm start-client
 ```
 
 ## License and Acknowledgments

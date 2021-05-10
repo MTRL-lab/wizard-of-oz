@@ -17,7 +17,7 @@ export default class Chat extends Component {
 
     this.socket = io(url);
     this.socket.on("connect", () => {
-      console.log(this.socket.id); // x8WIv7-mJelg7on_ALbx
+      // console.log(this.socket.id); // x8WIv7-mJelg7on_ALbx
     });
   }
 

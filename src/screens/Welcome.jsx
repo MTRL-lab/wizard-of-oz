@@ -4,7 +4,6 @@ import { Redirect } from "react-router-dom";
 import { Container, Form, Button, Jumbotron, Col, Row } from "react-bootstrap";
 
 import api from "../lib/api.js";
-
 import { VideoCapture } from "../components/VideoCapture";
 
 class Welcome extends Component {
@@ -14,6 +13,7 @@ class Welcome extends Component {
     answers: false,
     consent: false,
     name: "",
+    consent_html: <div></div>
   };
 
   handleChange = (event) => {
@@ -39,7 +39,19 @@ class Welcome extends Component {
         console.error(error);
       });
   };
-  activateVideo = () => {};
+  componentDidMount = () => {
+    api.get('consent_form/')
+      .then(response => {
+        const consent_html = JSON.parse(response.data.content)
+        this.setState({consent_html})
+      })
+
+  };
+
+  createMarkup = () => {
+    const {consent_html} = this.state
+    return {__html: consent_html};
+  }
   render() {
     const { read, answers, consent, name, done } = this.state;
 
@@ -55,54 +67,10 @@ class Welcome extends Component {
     return (
       <Container>
         <Row>
-          <Col>
-            <h2>
-              Structuring and modeling design conversations between humans and
-              artificial intelligence
-            </h2>
-            <p>Principal Investigator: Aaron Sprecher</p>
-          </Col>
-        </Row>
-        <Row>
           <Col sm={8}>
             <h1>Informed Consent Form</h1>
 
-            <p>Dear Participant,</p>
-            <p>
-              The study goal is to test artificial intelligence chat-bot
-              software and learn about design conversations with humans. In this
-              study, you will be asked to think about your dream home and have a
-              chat with a chat-bot about your dream house requirements and
-              filling a questionnaire.
-            </p>
-
-            <p>
-              The questionnaire is anonymous. There is no risk in filling out
-              the participating, there are no correct or incorrect answers. The
-              purpose of the study is to learn about design conversations.
-            </p>
-
-            <p>
-              The records of this study will be kept private. In any sort of
-              report we make public we will not include any information that
-              will make it possible to identify you without your explicit
-              consent. Research records will be kept in on a secured private
-              computer; only the researchers will have access to the records.
-            </p>
-
-            <p>
-              Taking part in this study is completely voluntary. If you decide
-              not to take part or to skip some of the questions, it will not
-              affect you. If you decide to take part, you are free to withdraw
-              at any time.
-            </p>
-
-            <p>
-              If you have questions, you may contact Prof.{" "}
-              <a href="mailto:asprecher@technion.ac.il">Aaron Sprecher</a> or{" "}
-              <a href="mailto:jonathan@dortheimer.com">Jonathan Dortheimer</a>.
-            </p>
-
+            <div dangerouslySetInnerHTML={this.createMarkup()} />
             <Jumbotron>
               <Form onSubmit={this.handleSubmit}>
                 <Form.Group controlId="read">
@@ -132,7 +100,7 @@ class Welcome extends Component {
                     checked={consent}
                     onChange={this.handleChange}
                     type="checkbox"
-                    label="I consent to take part in the study"
+                    label="I agree to the above and signed a separate consent form"
                   />
                 </Form.Group>
                 <Form.Group controlId="name">

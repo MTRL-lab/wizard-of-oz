@@ -31,15 +31,19 @@ app.use(cors({
 }))
 app.use(fileUpload());
 app.use(express.json());
-app.use(express.urlencoded())
+app.use(express.urlencoded({ extended: true }))
+
 
 // serve static files
-app.use(express.static(path.join(path.resolve(''), 'build')))
 app.use('/uploads', express.static(path.join(path.resolve(''), 'uploads')))
 
 // set up api routes
 app.use('/api', routes)
 
+// Serve react index file
+app.use((req, res) => {
+    res.sendFile(path.join(path.resolve(''), "build", "index.html"));
+});
 // error handlers
 app.use((req, res) => {
     logger.debug('404', req.path)

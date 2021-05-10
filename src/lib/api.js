@@ -1,6 +1,8 @@
 import axios from "axios"
 
-export const url = 'http://localhost:3002'
+// eslint-disable-next-line no-undef
+export const url = process.env.REACT_APP_SERVER_URL
+
 export const baseURL = `${url}/api/`
 
 export default axios.create({

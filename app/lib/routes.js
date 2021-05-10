@@ -1,6 +1,8 @@
 import express from 'express';
-import wrapper from './route_wrapper.js'
+import fs from 'fs';
+import path from 'path';
 
+import wrapper from './route_wrapper.js'
 import { Consent, Message } from '../models/index.js'
 
 const api = express.Router();
@@ -27,6 +29,20 @@ api.post('/video/', wrapper((req) => {
             Message.saveVideo(message, req.files.video)
         })
 
+}))
+
+api.get('/consent_form/', wrapper(() => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(path.join(path.resolve(''), "config", "consent.html"), 'utf8', (err, content) => {
+            if (err) reject(err);
+            resolve(content)
+        })
+
+    }).then(content => {
+        return {
+            content: JSON.stringify(content)
+        }
+    })
 }))
 
 export default api

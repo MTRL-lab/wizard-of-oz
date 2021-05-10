@@ -1,7 +1,22 @@
 {
     "name": "wizard-of-oz",
-    "version": "0.1.0",
-    "private": true,
+    "description": "A Wizard of Oz experimental chat application.",
+    "keywords": [
+        "wizard of oz",
+        "experiment",
+        "research",
+        "human computer interaction",
+        "hci"
+    ],
+    "author": "Jonathan Dortheimer <jonathan@dortheimer.com>",
+    "contributors": [],
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:MTRL-lab/wizard-of-oz.git"
+    },
+    "main": "wizard-of-oz.js",
+    "version": "1.0.0",
+    "private": false,
     "type": "module",
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
@@ -17,12 +32,12 @@
         "bootstrap": "^4.6.0",
         "config": "^3.3.6",
         "cors": "^2.8.5",
+        "enumerate-devices": "^1.1.1",
         "express": "^4.17.1",
         "express-fileupload": "^1.2.1",
         "express-session": "^1.17.1",
         "express-session-sequelize": "^2.3.0",
         "moment": "^2.29.1",
-        "mysql": "^2.18.1",
         "mysql2": "^2.2.5",
         "prop-types": "^15.7.2",
         "react": "^17.0.2",
@@ -31,15 +46,14 @@
         "react-native-vector-icons": "^8.1.0",
         "react-router-dom": "^5.2.0",
         "react-scripts": "4.0.3",
-        "react-webcam-onfido": "^0.1.23",
         "sequelize": "^6.6.2",
         "socket.io": "^4.0.1",
         "socket.io-client": "^4.0.1",
-        "web-vitals": "^1.1.1",
         "winston": "^3.3.3"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "node wizard-of-oz.js",
+        "start-client": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"

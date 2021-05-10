@@ -9,7 +9,7 @@ export default class ChatMessage extends Component {
     const incoming = username == "operator";
 
     let content = "";
-    console.log(json);
+
     if (json.key == "what") {
       content = (
         <Fragment>

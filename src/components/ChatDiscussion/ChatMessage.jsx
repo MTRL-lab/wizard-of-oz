@@ -7,10 +7,20 @@ export default class ChatMessage extends Component {
 
     const json = JSON.parse(msg);
     const incoming = username == "operator";
-
+    const system = username == '';
     let content = "";
 
-    if (json.key == "what") {
+    if (json.key == 'clientWriting') {
+      content = (
+        <div className="dot-elastic"></div>
+      );
+    }
+    else if (json.key == 'operatorWriting') {
+      content = (
+        <Fragment> <div className="dot-elastic"></div></Fragment>
+      );
+    }
+    else if (json.key == "what") {
       content = (
         <Fragment>
           {json.message}
@@ -27,7 +37,7 @@ export default class ChatMessage extends Component {
       return (
         <div className="incoming_msg">
           <div className="incoming_msg_img">
-            <img src={img} alt={username} />
+            <img src='logo.png' alt={username} />
           </div>
           <div className="received_msg">
             <div className="received_withd_msg">
@@ -39,7 +49,17 @@ export default class ChatMessage extends Component {
           </div>
         </div>
       );
-    } else {
+    } 
+    
+    if (system) {
+      return (
+        <div className="system_msg">
+             {content}
+        </div>
+      );
+    }
+
+    
       return (
         <div className="outgoing_msg">
           <div className="sent_msg">
@@ -50,14 +70,14 @@ export default class ChatMessage extends Component {
           </div>
         </div>
       );
-    }
+    
   }
 }
 
 ChatMessage.propTypes = {
-  username: PropTypes.string.isRequired,
-  img: PropTypes.string.isRequired,
+  username: PropTypes.string,
+  img: PropTypes.string,
   msg: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
-  time: PropTypes.string.isRequired,
+  date: PropTypes.string,
+  time: PropTypes.string,
 };

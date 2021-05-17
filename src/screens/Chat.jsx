@@ -6,9 +6,20 @@ import { ChatDiscussion, ChatInput } from "../components/ChatDiscussion";
 
 import { VideoCapture } from "../components/VideoCapture";
 
+
+const connectMessage = () => {
+  return {
+    username: '',
+    msg: JSON.stringify({message:'You are connected'})
+    
+  }
+}
 export default class Chat extends Component {
   state = {
     messages: [],
+    discussion_id: null,
+    clientWriting: false,
+    operatorWriting: false
   };
 
   constructor(props) {
@@ -21,8 +32,14 @@ export default class Chat extends Component {
     });
   }
 
+  updateKeyUp = () => {
+    this.socket.emit("clientWriting")
+  }
+
   handleSend = (messageToServer) => {
+    const {discussion_id} = this.state
     const json = {
+      discussion_id,
       message: messageToServer,
     };
     this.videoCaptureRef.current.stopRecording();
@@ -43,23 +60,58 @@ export default class Chat extends Component {
   };
 
   componentDidMount() {
+    this.socket.on("start", (data) => {
+      const {discussion_id} = data;
+      this.setState({ discussion_id });
+      
+      const { messages } = this.state;
+      messages.push(connectMessage());
+      this.setState({ messages });
+    });
     this.socket.on("clientSaid", (message) => {
       const { messages } = this.state;
       messages.push(message);
-      this.setState({ messages });
-    });
+      this.setState({ messages, clientWriting:false });
+    }); 
+
+    this.socket.on("clientWriting", ()=>{
+      this.setState({clientWriting:true})
+
+      if (this.clientInterval) {
+        clearInterval(this.clientInterval)
+      }
+
+      this.clientInterval = setTimeout(()=> {
+        this.setState({clientWriting:false})
+      }, 2500)
+    })
 
     this.socket.on("operatorSaid", (message) => {
       const { messages } = this.state;
       messages.push(message);
-      this.setState({ messages });
+      this.setState({ messages,operatorWriting:false });
 
       this.videoCaptureRef.current.startRecording();
     });
+
+    this.socket.on("operatorWriting", ()=>{
+      this.setState({operatorWriting:true})
+      
+      if (this.operatorInterval) {
+        clearInterval(this.operatorInterval)
+      }
+
+      this.operatorInterval = setTimeout(()=> {
+        this.setState({operatorWriting:false})
+      }, 2500)
+    })
+
+    // create session and start discussion
+    this.socket.emit('clientConnected')
   }
 
   render() {
-    const { messages } = this.state;
+    const { messages, clientWriting,operatorWriting} = this.state;
     return (
       <Container>
         <Row>
@@ -71,8 +123,8 @@ export default class Chat extends Component {
             />
           </Col>
           <Col>
-            <ChatDiscussion messages={messages} />
-            <ChatInput handleSend={this.handleSend} />
+            <ChatDiscussion messages={messages} clientWriting={clientWriting} operatorWriting={operatorWriting} />
+            <ChatInput handleSend={this.handleSend} updateKeyUp={this.updateKeyUp} />
           </Col>
         </Row>
       </Container>

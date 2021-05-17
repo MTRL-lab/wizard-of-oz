@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import TextareaAutosize from 'react-textarea-autosize';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
@@ -18,7 +19,10 @@ export default class ChatInput extends Component {
   };
 
   handleKeyUp = (event) => {
+    const { updateKeyUp } = this.props;
+    updateKeyUp()
     if (event.key === "Enter") {
+      event.preventDefault()
       return this.handleSend();
     }
   };
@@ -36,8 +40,7 @@ export default class ChatInput extends Component {
     return (
       <div className="type_msg">
         <div className="input_msg_write">
-          <input
-            type="text"
+          <TextareaAutosize
             className="write_msg"
             placeholder="Type a message"
             value={value}
@@ -59,4 +62,5 @@ export default class ChatInput extends Component {
 
 ChatInput.propTypes = {
   handleSend: PropTypes.func.isRequired,
+  updateKeyUp: PropTypes.func.isRequired,
 };

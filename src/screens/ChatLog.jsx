@@ -49,28 +49,36 @@ class ChatLog extends Component {
 
     return groupedMessages;
   };
+  getMessages = (discussion_id) => {
+    api
+    .get("/messages",{params:{discussion_id}})
+    .then((result) => this.groupMessagesWithVideo(result))
+    .then((groupedMessages) => this.setState({ groupedMessages }))
+    .catch((error) => console.error(error));
+  }
   componentDidUpdate(previousProps) {
 
-    if (previousProps.match.params.session_id === this.props.match.params.session_id) {
+    if (previousProps.match.params.discussion_id === this.props.match.params.discussion_id) {
         return false
     }
-    const session_id = this.props.match.params.session_id
-    if (!session_id) return ;
+    const discussion_id = this.props.match.params.discussion_id
+    if (!discussion_id) return ;
 
-    api
-      .get("/messages",{params:{session_id}})
-      .then((result) => this.groupMessagesWithVideo(result))
-      .then((groupedMessages) => this.setState({ groupedMessages }))
-      .catch((error) => console.error(error));console.log(3)
+    this.getMessages(discussion_id);
+    
   }
   componentDidMount() {
     
+    const discussion_id = this.props.match.params.discussion_id
     api
       .get("/sessions")
       .then((results) => this.setState({ sessions: results.data }))
       .catch((error) => console.error(error));
 
-   
+     
+      if (!discussion_id) return ;
+  
+      this.getMessages(discussion_id);
   }
 
   render() {
@@ -80,8 +88,8 @@ class ChatLog extends Component {
     return (
       <Container>
         <h1>Chat log</h1>
-        <Row>
-          <Col xs={groupedMessages.length ? 3 : 12 } >
+        <Row >
+          <Col xs={groupedMessages.length ? 3 : 12 }>
             <h4>Session list</h4>
             {sessions.map((session, i) => {
               const date = moment(session.start);
@@ -93,21 +101,15 @@ class ChatLog extends Component {
                     <Card.Text className="mb-2 text-muted">
                       {date.format("DD/MM/YYYY")} | {session.num} messages
                     </Card.Text>
-                    <Link to={`/chatlog/${session.session_id}`}>
+                    <Link to={`/chatlog/${session.discussion_id}`}>
                       View session
                     </Link>
                   </Card.Body>
                 </Card>
               );
-              // <div>
-              //     <a href={`?${session.session_id}`}>{session.session_id}</a>
-              //     {session.num} messages
-              //
-
-              // </div>
             })}
           </Col>
-          {groupedMessages.length && <Col xs="9">
+          {groupedMessages.length>0 && <Col xs="9">
             { groupedMessages.map((group, i) => {
               return (
                 <Row key={i}>

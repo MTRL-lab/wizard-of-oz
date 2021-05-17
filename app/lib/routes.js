@@ -16,10 +16,10 @@ api.post('/agree/', wrapper((req) => {
 //display all messages
 api.get('/messages/', wrapper((req) => {
 
-    const session_id = req.query.session_id || 0;
+    const discussion_id = req.query.discussion_id || 0;
     return Message.findAll({
             where: {
-                session_id
+                discussion_id
             }
         })
         .then(messages => messages.map(message => Message.toChatJson(message)))
@@ -28,12 +28,12 @@ api.get('/messages/', wrapper((req) => {
 api.get('/sessions/', wrapper(() => {
 
 
-    const query = `SELECT session_id, count(*) as num, 
+    const query = `SELECT discussion_id, count(*) as num, 
     min(createdAt) as start, max(createdAt) as end ,
     max(createdAt) - min(createdAt) as ra 
     FROM Messages 
-    WHERE session_id !=""
-    GROUP BY session_id`;
+    WHERE discussion_id !=""
+    GROUP BY discussion_id`;
 
     return db.query(query)
         .then(([results, ]) => {

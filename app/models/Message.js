@@ -4,6 +4,11 @@ import { db } from "../lib/db.js";
 
 
 const Message = db.define('Message', {
+
+    discussion_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     session_id: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -29,7 +34,6 @@ Message.toChatJson = (message) => {
     return {
         id: message.get('id'),
         username: message.get('username'),
-        img: 'logo.png',
         msg: message.get('msg'),
         date: moment(date).format('Do MMM'),
         time: moment(date).format('h:mma'),

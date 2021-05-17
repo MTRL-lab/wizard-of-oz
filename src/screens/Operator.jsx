@@ -4,9 +4,21 @@ import { io } from "socket.io-client";
 import { url } from "../lib/api";
 import { ChatDiscussion, ChatInput } from "../components/ChatDiscussion";
 
+
+const connectMessage = () => {
+  return {
+    username: '',
+    msg: JSON.stringify({message:'Client is connected'})
+    
+  }
+}
+
 export default class Operator extends Component {
   state = {
     messages: [],
+    discussion_id: null,
+    clientWriting:false,
+    operatorWriting:false
   };
 
   constructor(props) {
@@ -20,8 +32,10 @@ export default class Operator extends Component {
   }
 
   handleSend = (messageToServer) => {
+    const {discussion_id} = this.state
     const json = {
       message: messageToServer,
+      discussion_id
     };
     this.socket.emit("operatorSay", json);
   };
@@ -35,28 +49,68 @@ export default class Operator extends Component {
     this.socket.emit("operatorSay", json);
   };
 
+
+  updateKeyUp = () => {
+    this.socket.emit("operatorWriting")
+  }
+
   componentDidMount() {
+
+    this.socket.on("start", (data) => {
+      const {discussion_id} = data;
+      this.setState({ discussion_id });
+      
+      const { messages } = this.state;
+      messages.push(connectMessage());
+      this.setState({ messages });
+    });
+
     this.socket.on("clientSaid", (message) => {
       const { messages } = this.state;
       messages.push(message);
-      this.setState({ messages });
+      this.setState({ messages,clientWriting:false });
     });
+
+    this.socket.on("clientWriting", ()=>{
+      this.setState({clientWriting:true})
+
+      if (this.clientInterval) {
+        clearInterval(this.clientInterval)
+      }
+
+      this.clientInterval = setTimeout(()=> {
+        this.setState({clientWriting:false})
+      }, 2500)
+    })
 
     this.socket.on("operatorSaid", (message) => {
       const { messages } = this.state;
       messages.push(message);
-      this.setState({ messages });
+      this.setState({ messages,operatorWriting:false });
     });
+
+    this.socket.on("operatorWriting", ()=>{
+      this.setState({operatorWriting:true})
+      
+      if (this.operatorInterval) {
+        clearInterval(this.operatorInterval)
+      }
+
+      this.operatorInterval = setTimeout(()=> {
+        this.setState({operatorWriting:false})
+      }, 2500)
+    })
   }
 
   render() {
-    const { messages } = this.state;
+    const { messages, clientWriting,operatorWriting } = this.state;
+
     return (
       <Container>
         <Row>
           <Col>
-            <ChatDiscussion messages={messages} />
-            <ChatInput handleSend={this.handleSend} />
+          <ChatDiscussion messages={messages} clientWriting={clientWriting} operatorWriting={operatorWriting} />
+            <ChatInput handleSend={this.handleSend} updateKeyUp={this.updateKeyUp} />
           </Col>
           <Col>
             <h3>Prepared messages</h3>

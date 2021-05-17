@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const indexRoutes = [
   // { path: '/wizard/', component: Wizard },
   { path: "/chat/", component: Chat ,exact: true },
-  { path: "/chatlog/:session_id", component: ChatLog ,exact: false},
+  { path: "/chatlog/:discussion_id", component: ChatLog ,exact: false},
   { path: "/chatlog/", component: ChatLog ,exact: false},
   { path: "/operator", component: Operator ,exact: true },
   { path: "/", component: Welcome  ,exact: true},

@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
+import logo from './logo.png'
+
 export default class ChatMessage extends Component {
   render() {
     const { username, img, msg, date, time } = this.props;
@@ -37,7 +39,7 @@ export default class ChatMessage extends Component {
       return (
         <div className="incoming_msg">
           <div className="incoming_msg_img">
-            <img src='logo.png' alt={username} />
+            <img src={logo} alt={username} />
           </div>
           <div className="received_msg">
             <div className="received_withd_msg">

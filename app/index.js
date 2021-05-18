@@ -10,6 +10,8 @@ import {
 } from './lib/db.js'
 import logger from './lib/log.js'
 import routes from './lib/routes.js'
+import videoRoutes from './lib/video_routes.js'
+
 
 const sessionConfig = config.get("session")
 
@@ -37,7 +39,7 @@ app.use(express.urlencoded({ extended: true }))
 // serve static files
 app.use('/', express.static(path.join(path.resolve(''), 'build')))
 app.use('/', express.static(path.join(path.resolve(''), 'public')))
-app.use('/uploads', express.static(path.join(path.resolve(''), 'uploads')))
+app.use('/uploads', videoRoutes)
 
 // set up api routes
 app.use('/api', routes)

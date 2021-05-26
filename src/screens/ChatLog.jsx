@@ -6,11 +6,10 @@ import { Container, Col, Row, Card } from "react-bootstrap";
 import api, { url } from "../lib/api.js";
 import { ChatMessage } from "../components/ChatDiscussion";
 
-
 const videoStyle = {
-    width: "100%",
-    hight: "auto",
-  };
+  width: "100%",
+  hight: "auto",
+};
 
 
 class ChatLog extends Component {
@@ -22,7 +21,7 @@ class ChatLog extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
   };
 
   // group all the messages that belong to one video
@@ -51,45 +50,43 @@ class ChatLog extends Component {
   };
   getMessages = (discussion_id) => {
     api
-    .get("/messages",{params:{discussion_id}})
-    .then((result) => this.groupMessagesWithVideo(result))
-    .then((groupedMessages) => this.setState({ groupedMessages }))
-    .catch((error) => console.error(error));
-  }
+      .get("/messages", { params: { discussion_id } })
+      .then((result) => this.groupMessagesWithVideo(result))
+      .then((groupedMessages) => this.setState({ groupedMessages }))
+      .catch((error) => console.error(error));
+  };
   componentDidUpdate(previousProps) {
-
-    if (previousProps.match.params.discussion_id === this.props.match.params.discussion_id) {
-        return false
+    if (
+      previousProps.match.params.discussion_id ===
+      this.props.match.params.discussion_id
+    ) {
+      return false;
     }
-    const discussion_id = this.props.match.params.discussion_id
-    if (!discussion_id) return ;
+    const discussion_id = this.props.match.params.discussion_id;
+    if (!discussion_id) return;
 
     this.getMessages(discussion_id);
-    
   }
   componentDidMount() {
-    
-    const discussion_id = this.props.match.params.discussion_id
+    const discussion_id = this.props.match.params.discussion_id;
     api
       .get("/sessions")
       .then((results) => this.setState({ sessions: results.data }))
       .catch((error) => console.error(error));
 
-     
-      if (!discussion_id) return ;
-  
-      this.getMessages(discussion_id);
+    if (!discussion_id) return;
+
+    this.getMessages(discussion_id);
   }
 
   render() {
     const { groupedMessages, sessions } = this.state;
 
- 
     return (
       <Container>
         <h1>Chat log</h1>
-        <Row >
-          <Col xs={groupedMessages.length ? 3 : 12 }>
+        <Row>
+          <Col xs={groupedMessages.length ? 3 : 12}>
             <h4>Session list</h4>
             {sessions.map((session, i) => {
               const date = moment(session.start);
@@ -109,33 +106,38 @@ class ChatLog extends Component {
               );
             })}
           </Col>
-          {groupedMessages.length>0 && <Col xs="9">
-            { groupedMessages.map((group, i) => {
-              return (
-                <Row key={i}>
-                  <Col xs="6">
-                    {group.video && (
-                      <video style={videoStyle} controls>
-                        <source
-                          src={`${url}/uploads/video${group.video}.mp4`}
-                          type="video/mp4"
-                        />
-                      </video>
-                    )}
-                  </Col>
-                  <Col xs="6">
-                    {group.messages.map((message, j) => (
-                      <ChatMessage key={j} {...message} />
-                    ))}
-                  </Col>
-                </Row>
-              );
-            })}
-          </Col>}
+          {groupedMessages.length > 0 && (
+            <Col xs="9">
+              {groupedMessages.map((group, i) => {
+                return (
+                  <Row key={i}>
+                    <Col xs="6">
+                      {group.video && (
+                        <video
+                          style={videoStyle}
+                          controls
+                        >
+                          <source
+                            src={`${url}/uploads/video${group.video}.mp4`}
+                            type="video/mp4"
+                          />
+                        </video>
+                      )}
+                    </Col>
+                    <Col xs="6">
+                      {group.messages.map((message, j) => (
+                        <ChatMessage key={j} {...message} />
+                      ))}
+                    </Col>
+                  </Row>
+                );
+              })}
+            </Col>
+          )}
         </Row>
       </Container>
     );
   }
 }
 
-export default withRouter(ChatLog)
+export default withRouter(ChatLog);

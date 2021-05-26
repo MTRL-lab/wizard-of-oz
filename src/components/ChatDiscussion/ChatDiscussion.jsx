@@ -27,11 +27,11 @@ export default class ChatDiscussion extends Component {
 
   render() {
 
-    const { messages , clientWriting, operatorWriting} = this.props
+    const { messages , clientWriting, operatorWriting, handleClickOption} = this.props
     return (
       <div className="mesgs">
         <div className="msg_history">
-          {messages.map((message, i) => <ChatMessage key={i} {...message} />)}
+          {messages.map((message, i) => <ChatMessage key={i} handleClickOption={handleClickOption} {...message} />)}
           {operatorWriting && <ChatMessage username="operator" msg={JSON.stringify({key:"operatorWriting"})} />}
           {clientWriting && <ChatMessage username="client" msg={JSON.stringify({key:"clientWriting"})} />}
           <div ref={this.messagesEndRef} />
@@ -47,4 +47,6 @@ ChatDiscussion.propTypes = {
   messages: PropTypes.arrayOf(PropTypes.object),
   clientWriting: PropTypes.bool,
   operatorWriting: PropTypes.bool,
+  handleClickOption: PropTypes.func
+
 }

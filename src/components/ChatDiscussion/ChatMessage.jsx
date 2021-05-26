@@ -4,6 +4,12 @@ import PropTypes from "prop-types";
 import logo from './logo.png'
 
 export default class ChatMessage extends Component {
+
+
+  handleClickOption = (text) => {
+    const {handleClickOption} = this.props
+    handleClickOption(text)
+  }
   render() {
     const { username, img, msg, date, time } = this.props;
 
@@ -22,17 +28,22 @@ export default class ChatMessage extends Component {
         <Fragment> <div className="dot-elastic"></div></Fragment>
       );
     }
-    else if (json.key == "what") {
-      content = (
-        <Fragment>
-          {json.message}
-          {json.options.map((option, i) => (
-            <button key={i}>{option}</button>
-          ))}
-        </Fragment>
-      );
-    } else if (json.message) {
-      content = json.message;
+    else if (json.message) {
+      
+
+        if (json.options ) {
+          content = (
+            <Fragment>
+              {json.message}
+              {json.options.map((option, i) => (
+                <button onClick={() => this.handleClickOption(option)} key={i}>{option}</button>
+              ))}
+            </Fragment>
+          );
+      }
+      else {
+        content = json.message;
+      }
     }
 
     if (incoming) {
@@ -82,4 +93,5 @@ ChatMessage.propTypes = {
   msg: PropTypes.string.isRequired,
   date: PropTypes.string,
   time: PropTypes.string,
+  handleClickOption: PropTypes.func
 };

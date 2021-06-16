@@ -1,0 +1,134 @@
+{
+    "preparedStatements": [{
+            "message": "Hello, I'm Frank AI Wright. I am a design bot, and I'm hear to speak with you about the design of your dream home."
+        },
+        {
+            "message": "Let's try it out! Please tell me your name. Click the speak button and say your name."
+        },
+        {
+            "message": "How are you feeling today?"
+        }
+    ],
+    "preparedQuestions": [{
+            "message": "What would you like to build?",
+            "options": ["villa", "apartment", "office", "residential addition"]
+        },
+
+        {
+            "message": "Where is the plot/apartment located?"
+        },
+        {
+            "message": "What do you do outside work?"
+        },
+        {
+            "message": "What are the challenges you currently face?"
+        },
+        {
+            "message": "What is your address?"
+        },
+        {
+            "message": "Who will use this space? (kids, elderly, tenants, etc.)."
+        },
+        {
+            "message": "What is your 5-year, 10-year and long-term plan for this space?"
+        },
+        {
+            "message": "What is the daily routine for the new space? What activities do you see yourself doing routinely?"
+        },
+        {
+            "message": "How much time do you spend in the different areas of your home (indoors and outdoors)?"
+        },
+        {
+            "message": "What is your lifestyle? Are you at home a great deal? Do you work at home?"
+        },
+        {
+            "message": "Do you entertain often? Describe the backyard."
+        },
+        {
+            "message": "How concerned are you about privacy?"
+        },
+        {
+            "message": "Is there anyone in the family with a disability or who has mobility problems? (think long-term as well)"
+        },
+        {
+            "message": "Do you have any sustainability goals for the project?"
+        },
+        {
+            "message": "Are there any views on the site that are particularly important to you?"
+        },
+        {
+            "message": "What kind of ideas do you have for design or materials?"
+        },
+        {
+            "message": "Do you have any images from magazines or Pinterest that show us a style that you like?"
+        },
+        {
+            "message": "Are there any particular design features that are important to you?"
+        },
+        {
+            "message": "What style of architecture do you prefer?",
+            "options": [
+                "Bauhaus",
+                "Minimalism",
+                "Deconstuctivism",
+                "Post Modern",
+                "Mediterranean",
+                "Mid-Century Modern",
+                "Modern",
+                "Brutalism",
+
+                "Spanish",
+                "Southern",
+                "Traditional",
+                "Tuscan",
+                "Victorian",
+                "Rustic",
+                "Gothic Architecture"
+            ]
+        },
+        {
+            "message": "What kind of kitchen do you like?"
+        },
+        {
+            "message": "How many bedrooms do you want?"
+        },
+        {
+            "message": "How many bathrooms do you want?"
+        },
+        {
+            "message": "What kind of spaces are most important to you? (Bedrooms, kitchen, family room, bathrooms, etc.?)"
+        },
+        {
+            "message": "What storage needs do you have? (Bicycles, vacuum cleaners, camping gear etc.)"
+        },
+        {
+            "message": "Do you want a loft or second floor?"
+        },
+        {
+            "message": "Do you have any landscaping requirements?"
+        },
+        {
+            "message": "What are the time constraints of the project?"
+        },
+        {
+            "message": "What is your budget for the project?"
+        }
+    ],
+
+    "preparedAnswers": [{
+            "message": "I am sorry but I did not understand..."
+        },
+        {
+            "message": "I hope you feel better soon"
+        },
+        {
+            "message": "This is great."
+        },
+        {
+            "message": "OK."
+        },
+        {
+            "message": "I hope to visit there in the future."
+        }
+    ]
+}

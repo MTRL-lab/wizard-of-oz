@@ -22,7 +22,7 @@ export default class ChatDiscussion extends Component {
   }
 
   scrollToBottom = () => {
-    this.messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    this.messagesEndRef.current.scrollIntoView({ alignToTop:true, behavior: 'smooth' })
   }
 
   render() {

@@ -4,7 +4,6 @@ import { Redirect } from "react-router-dom";
 import { Container, Form, Button, Jumbotron, Col, Row } from "react-bootstrap";
 
 import api from "../lib/api.js";
-import { VideoCapture } from "../components/VideoCapture";
 
 class Welcome extends Component {
   state = {
@@ -67,7 +66,7 @@ class Welcome extends Component {
     return (
       <Container>
         <Row>
-          <Col sm={8}>
+          <Col sm={12}>
             <h1>Informed Consent Form</h1>
 
             <div dangerouslySetInnerHTML={this.createMarkup()} />
@@ -129,9 +128,6 @@ class Welcome extends Component {
                 </Button>
               </Form>
             </Jumbotron>
-          </Col>
-          <Col sm={4}>
-            <VideoCapture />
           </Col>
         </Row>
       </Container>

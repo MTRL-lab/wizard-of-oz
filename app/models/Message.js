@@ -37,6 +37,7 @@ Message.toChatJson = (message) => {
         msg: message.get('msg'),
         date: moment(date).format('Do MMM'),
         time: moment(date).format('h:mma'),
+        audio: message.audio || false
     }
 }
 
@@ -45,4 +46,5 @@ Message.saveVideo = (message, file) => {
         file.mv(`./uploads/video${message.get('id')}.mp4`, (err) => err ? reject(err) : resolve())
     })
 }
+
 export default Message

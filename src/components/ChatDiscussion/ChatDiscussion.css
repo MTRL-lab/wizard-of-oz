@@ -145,10 +145,6 @@ img {
     margin: 8px 0 0;
 }
 
-.received_withd_msg {
-    width: 57%;
-}
-
 .mesgs {
     /* float: left; */
     padding: 30px 15px 0 25px;
@@ -172,7 +168,6 @@ img {
 
 .sent_msg {
     float: right;
-    width: 46%;
 }
 
 .input_msg_write textarea {

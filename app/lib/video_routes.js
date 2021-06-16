@@ -1,19 +1,22 @@
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
+import log from './log.js';
 
 
 const videoStream = express.Router();
 
-videoStream.get("/:file", (req, res) => {
+videoStream.get("/:file.mp4", (req, res) => {
     // Ensure there is a range given for the video
+    log.silly(`video ${req.params.file}}`)
+
     const range = req.headers.range;
     if (!range) {
         res.status(400).send("Requires Range header");
     }
 
     // get video stats (about 61MB)
-    const videoPath = path.join(path.resolve(''), "uploads", req.params.file);
+    const videoPath = path.join(path.resolve(''), "uploads", `${req.params.file}.mp4`);
     const videoSize = fs.statSync(videoPath).size;
 
     // Parse Range
@@ -40,6 +43,5 @@ videoStream.get("/:file", (req, res) => {
     // Stream the video chunk to the client
     videoStream.pipe(res);
 });
-
 
 export default videoStream

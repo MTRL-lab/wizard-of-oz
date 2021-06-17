@@ -114,6 +114,15 @@ export default class Chat extends Component {
     this.socket.emit("clientConnected");
   }
 
+  handleSend = (messageToServer) => {
+    const { discussion_id } = this.state;
+    
+    this.socket.emit("clientSay", {
+      discussion_id,
+      message: messageToServer,
+    });
+  };
+
   startRecording = () => {
     this.setState({ record: true });
     this.socket.emit("clientWriting");

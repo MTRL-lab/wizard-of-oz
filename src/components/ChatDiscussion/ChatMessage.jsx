@@ -36,7 +36,7 @@ export default class ChatMessage extends Component {
             <Fragment>
               {json.message}
               {json.options.map((option, i) => (
-                <button onClick={() => this.handleClickOption(option)} key={i}>{option}</button>
+                <button className="btn btn-primary" onClick={() => this.handleClickOption(option)} key={i}>{option}</button>
               ))}
             </Fragment>
           );

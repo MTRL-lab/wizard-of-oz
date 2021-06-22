@@ -102,7 +102,8 @@ const initSocketIO = (io) => {
                 .catch(() => {
                     return operatorSay(io, socket, {
                         discussion_id: json.discussion_id,
-                        message: errors[0].message
+                        message: errors[0].message,
+                        language: json.language
                     })
                 })
 

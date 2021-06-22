@@ -124,14 +124,21 @@ const initSocketIO = (io) => {
 
             loadDefaultText(language)
                 .then(() => {
+
+
                     // the first message a user receives
+                    operatorSay(io, socket, {
+                        discussion_id,
+                        message: preparedStatements[0].message,
+                        language
+                    })
                     setTimeout(() => {
                         operatorSay(io, socket, {
                             discussion_id,
-                            message: preparedStatements[0].message,
+                            message: preparedStatements[2].message,
                             language
                         })
-                    }, 2000)
+                    }, 3000)
 
                     setTimeout(() => {
                         operatorSay(io, socket, {
@@ -139,7 +146,7 @@ const initSocketIO = (io) => {
                             message: preparedStatements[1].message,
                             language
                         })
-                    }, 6000)
+                    }, 8000)
                 })
         })
     });

@@ -3,10 +3,10 @@
             "message": "Hello, I'm Frank AI Wright. I am a design bot, and I'm hear to speak with you about the design of your dream home."
         },
         {
-            "message": "Let's try it out! Please tell me your name. Click the speak button and say your name."
+            "message": "Let's try it out! What's your name? Click the speak button and say your name."
         },
         {
-            "message": "How are you feeling today?"
+            "message": "Currently I speak and understand English."
         }
     ],
     "preparedQuestions": [{

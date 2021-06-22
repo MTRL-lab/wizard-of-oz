@@ -10,6 +10,30 @@ import { access, writeFile } from 'fs/promises'
 const tts = new TextToSpeechClient();
 const stt = new SpeechClient();
 
+const support = {
+    'en-US': {
+        'tts': 'en-US',
+        'stt': 'en-US'
+    },
+    'de-DE': {
+        'tts': 'de-DE',
+        'stt': 'de-DE'
+    },
+    'he-IL': {
+        'tts': 'en-US',
+        'stt': 'he-IL'
+    }
+}
+
+export const langCodeTts = (language) => {
+    return support[language]['tts']
+}
+
+export const langCodeStt = (language) => {
+    return support[language]['stt']
+}
+
+
 
 export const textToSpeech = (text, languageCode) => {
 
@@ -21,7 +45,7 @@ export const textToSpeech = (text, languageCode) => {
 
         const request = {
             input: { text },
-            voice: { languageCode, ssmlGender },
+            voice: { languageCode: langCodeTts(languageCode), ssmlGender },
             audioConfig: { audioEncoding: 'MP3' },
         };
 
@@ -54,7 +78,7 @@ export const speechToText = (audio, languageCode) => {
         return stt.recognize({
                 config: {
                     encoding: 'WEBM_OPUS',
-                    languageCode,
+                    languageCode: langCodeStt(languageCode),
                     audioChannelCount: 2
                 },
                 audio: {

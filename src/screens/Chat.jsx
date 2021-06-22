@@ -257,6 +257,13 @@ export default class Chat extends Component {
             >
               Deutsch
             </Button>{" "}
+            <Button
+              variant="primary"
+              onClick={() => this.chooseLanguage("he-IL")}
+            >
+              עברית
+            </Button>{" "}
+            
           </Modal.Footer>
         </Modal>
         <div style={{ display: "none" }}>

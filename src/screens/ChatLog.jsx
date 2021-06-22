@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import { withRouter, Link } from "react-router-dom";
-import { Container, Col, Row, Card } from "react-bootstrap";
+import { withRouter} from "react-router-dom";
+import { Container, Col, Row } from "react-bootstrap";
 import api, { url } from "../lib/api.js";
 import { ChatMessage } from "../components/ChatDiscussion";
 
@@ -79,6 +79,10 @@ class ChatLog extends Component {
     this.getMessages(discussion_id);
   }
 
+  onChange = (id) => {
+    id
+  }
+
   render() {
     const { groupedMessages, sessions } = this.state;
 
@@ -88,23 +92,17 @@ class ChatLog extends Component {
         <Row>
           <Col xs={groupedMessages.length ? 3 : 12}>
             <h4>Session list</h4>
+            <select>
             {sessions.map((session, i) => {
               const date = moment(session.start);
               return (
-                <Card key={i} style={{ marginBottom: "10px" }}>
-                  <Card.Body>
-                    <Card.Title>Session {i + 1}</Card.Title>
-                    <Card.Subtitle></Card.Subtitle>
-                    <Card.Text className="mb-2 text-muted">
-                      {date.format("DD/MM/YYYY")} | {session.num} messages
-                    </Card.Text>
-                    <Link to={`/chatlog/${session.discussion_id}`}>
-                      View session
-                    </Link>
-                  </Card.Body>
-                </Card>
+                <option key={i} onChange={()=>this.onChange(session.discussion_id)}>
+                  {session.discussion_id} | 
+                  {date.format("DD/MM/YYYY")} | {session.num} messages
+                  </option>
               );
             })}
+            </select>
           </Col>
           {groupedMessages.length > 0 && (
             <Col xs="9">

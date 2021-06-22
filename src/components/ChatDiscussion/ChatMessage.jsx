@@ -2,6 +2,19 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
 import logo from './logo.png'
+import  './ChatMessage.css'
+
+
+const Spinner = function () {
+  return <span className="sk-chase">
+  <span className="sk-chase-dot"></span>
+  <span className="sk-chase-dot"></span>
+  <span className="sk-chase-dot"></span>
+  <span className="sk-chase-dot"></span>
+  <span className="sk-chase-dot"></span>
+  <span className="sk-chase-dot"></span>
+</span>
+}
 
 export default class ChatMessage extends Component {
 
@@ -11,7 +24,7 @@ export default class ChatMessage extends Component {
     handleClickOption(text)
   }
   render() {
-    const { username, img, msg, date, time } = this.props;
+    const { username, img, msg} = this.props;
 
     const json = JSON.parse(msg);
     const incoming = username == "operator";
@@ -19,14 +32,10 @@ export default class ChatMessage extends Component {
     let content = "";
 
     if (json.key == 'clientWriting') {
-      content = (
-        <div className="dot-elastic"></div>
-      );
+      content = <Spinner />
     }
     else if (json.key == 'operatorWriting') {
-      content = (
-        <Fragment> <div className="dot-elastic"></div></Fragment>
-      );
+      content = <Spinner />
     }
     else if (json.message) {
       
@@ -48,40 +57,28 @@ export default class ChatMessage extends Component {
 
     if (incoming) {
       return (
-        <div className="incoming_msg">
-          <div className="incoming_msg_img">
+        <li className="replies">
             <img src={logo} alt={username} />
-          </div>
-          <div className="received_msg">
-            <div className="received_withd_msg">
-              <div className="wrapper">{content}</div>
-              <span className="time_date">
-                {time} | {date}
-              </span>
-            </div>
-          </div>
-        </div>
+          <p>{content}</p>
+        </li>
       );
     } 
     
     if (system) {
       return (
-        <div className="system_msg">
+        <li>
+        <p className="system_msg">
              {content}
-        </div>
+        </p>
+        </li>
       );
     }
 
     
       return (
-        <div className="outgoing_msg">
-          <div className="sent_msg">
-            <div className="wrapper">{content}</div>
-            <span className="time_date">
-              {time} | {date}
-            </span>
-          </div>
-        </div>
+        <li className="sent">
+          <p>{content}</p>
+        </li>
       );
     
   }

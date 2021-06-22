@@ -6,17 +6,21 @@ import log from './log.js';
 import { Message } from '../models/index.js'
 import { textToSpeech, speechToText } from './voice.js'
 
-let preparedStatements
+let preparedStatements, errors
 
-readFile(new URL('../../src/preparedStatements.json',
-        import.meta.url))
-    .then(data => {
-        preparedStatements = JSON.parse(data).preparedStatements
-    })
+const loadDefaultText = (lang) => {
+    return readFile(new URL(`../../src/preparedStatements_${lang}.json`,
+            import.meta.url))
+        .then(data => {
+            preparedStatements = JSON.parse(data).preparedStatements
+            errors = JSON.parse(data).errors
+        })
+}
+
 
 const operatorSay = (io, socket, json) => {
     try {
-        textToSpeech(json.message)
+        textToSpeech(json.message, json.language)
 
         .then((fileName) => {
                 return Message.create({
@@ -71,9 +75,16 @@ const initSocketIO = (io) => {
             const bufferValue = Buffer.from(json.audio, "base64");
 
 
-            speechToText(json.audio)
-                .then(message => {
-                    json.message = message
+            speechToText(json.audio, json.language)
+                .then(text => {
+
+                    log.silly('Got message', text)
+
+                    if (!text) {
+                        throw new Error('No text response')
+                    }
+
+                    json.message = text
                     delete json.audio
                     return Message.create({
                         discussion_id: json.discussion_id,
@@ -83,12 +94,18 @@ const initSocketIO = (io) => {
                     })
                 })
                 .then(message => {
-
                     io.emit('clientSaid', Message.toChatJson(message))
-
                     const audioPath = path.join(path.resolve(''), "uploads", `audio${message.id}.webm`);
                     return writeFile(audioPath, bufferValue)
+
                 })
+                .catch(() => {
+                    return operatorSay(io, socket, {
+                        discussion_id: json.discussion_id,
+                        message: errors[0].message
+                    })
+                })
+
         })
 
 
@@ -99,30 +116,32 @@ const initSocketIO = (io) => {
         socket.on("operatorWriting", () => {
             io.emit('operatorWriting')
         })
-        socket.on("clientConnected", () => {
+        socket.on("clientConnected", ({ language }) => {
             const discussion_id = moment().unix()
 
             log.debug('discussion id', discussion_id)
-            io.emit('start', { discussion_id })
+            io.emit('start', { discussion_id, language })
 
-            // the first message a user receives
-            setTimeout(() => {
-                operatorSay(io, socket, {
-                    discussion_id,
-                    message: preparedStatements[0].message
+            loadDefaultText(language)
+                .then(() => {
+                    // the first message a user receives
+                    setTimeout(() => {
+                        operatorSay(io, socket, {
+                            discussion_id,
+                            message: preparedStatements[0].message,
+                            language
+                        })
+                    }, 2000)
+
+                    setTimeout(() => {
+                        operatorSay(io, socket, {
+                            discussion_id,
+                            message: preparedStatements[1].message,
+                            language
+                        })
+                    }, 6000)
                 })
-            }, 2000)
-
-            setTimeout(() => {
-                operatorSay(io, socket, {
-                    discussion_id,
-                    message: preparedStatements[1].message
-                })
-            }, 6000)
-
         })
-
-
     });
 }
 

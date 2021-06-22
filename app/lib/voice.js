@@ -10,24 +10,19 @@ import { access, writeFile } from 'fs/promises'
 const tts = new TextToSpeechClient();
 const stt = new SpeechClient();
 
-const config = {
-    encoding: 'WEBM_OPUS',
-    languageCode: 'en-US',
-    audioChannelCount: 2
-};
 
+export const textToSpeech = (text, languageCode) => {
 
-export const textToSpeech = (text, languageCode = 'en-US', ssmlGender = 'MALE') => {
-
-    const effectsProfileId = ['telephony-class-application'];
-    const sha = sha1(text);
+    const ssmlGender = 'MALE';
+    // const effectsProfileId = ['telephony-class-application'];
+    const sha = sha1(`${languageCode}_${text}`);
     const fileName = `uploads/${sha}.mp3`
     try {
 
         const request = {
             input: { text },
             voice: { languageCode, ssmlGender },
-            audioConfig: { audioEncoding: 'MP3', effectsProfileId: effectsProfileId },
+            audioConfig: { audioEncoding: 'MP3' },
         };
 
         return access(fileName)
@@ -47,16 +42,21 @@ export const textToSpeech = (text, languageCode = 'en-US', ssmlGender = 'MALE') 
 
     } catch (e) {
         console.error(e)
+        throw e
     }
 
 };
 
-export const speechToText = (audio) => {
+export const speechToText = (audio, languageCode) => {
 
     try {
         // Detects speech in the audio file
         return stt.recognize({
-                config,
+                config: {
+                    encoding: 'WEBM_OPUS',
+                    languageCode,
+                    audioChannelCount: 2
+                },
                 audio: {
                     content: audio,
                 }
@@ -66,6 +66,7 @@ export const speechToText = (audio) => {
                 .join('\n'))
     } catch (e) {
         console.error(e)
+        throw e
     }
 
 }

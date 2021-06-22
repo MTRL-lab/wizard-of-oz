@@ -1,9 +1,33 @@
 import React, { Component } from "react";
-import { Container, Col, Row } from "react-bootstrap";
 import { io } from "socket.io-client";
 import { url } from "../lib/api";
 import { ChatDiscussion, ChatInput } from "../components/ChatDiscussion";
-import {preparedStatements,preparedAnswers, preparedQuestions} from '../preparedStatements.json'
+import { ChatWrapper } from "../components/ChatWrapper";
+import PropTypes from "prop-types";
+
+class Panel extends Component {
+  render (){
+    const {onClick, prepared} = this.props;
+
+    return <div className="questions">
+      <ul>
+      {prepared.map((question, key) => (
+        <li
+          key={key}
+          onClick={() => onClick(question)}
+        >
+          {question.message}
+        </li>
+      ))}
+      </ul>
+    </div>
+  }
+}
+
+Panel.propTypes = {
+  onClick: PropTypes.func,
+  prepared: PropTypes.array
+};
 
 
 
@@ -20,6 +44,8 @@ export default class Operator extends Component {
     discussion_id: null,
     clientWriting: false,
     operatorWriting: false,
+    language:null,
+    prepared: []
   };
 
   constructor(props) {
@@ -29,23 +55,24 @@ export default class Operator extends Component {
     this.socket.on("connect", () => {
       // console.log(this.socket.id); // x8WIv7-mJelg7on_ALbx
     });
-    this.socket.on("start", () => {});
   }
 
   handleSend = (message) => {
-    const { discussion_id } = this.state;
+    const { discussion_id, language } = this.state;
     const json = {
       message,
       discussion_id,
+      language
     };
     this.socket.emit("operatorSay", json);
   };
 
   preparedMessage = (message) => {
-    const { discussion_id } = this.state;
+    const { discussion_id,language } = this.state;
     message.discussion_id = discussion_id;
+    message.language = language
     this.socket.emit("operatorSay", message);
-  };
+  }
 
   updateKeyUp = () => {
     this.socket.emit("operatorWriting");
@@ -53,12 +80,20 @@ export default class Operator extends Component {
 
   componentDidMount() {
     this.socket.on("start", (data) => {
-      const { discussion_id } = data;
-      this.setState({ discussion_id });
-
       const { messages } = this.state;
+
+      const { discussion_id,language } = data;
       messages.push(connectMessage());
-      this.setState({ messages });
+
+      const {
+        preparedStatements,
+        errors,
+        preparedQuestions,
+      // eslint-disable-next-line no-undef
+      } = require(`../preparedStatements_${language}.json`);
+
+      const prepared = preparedStatements.concat(preparedQuestions).concat(errors)
+      this.setState({ messages,discussion_id,prepared,language });
     });
 
     this.socket.on("clientSaid", (message) => {
@@ -99,71 +134,33 @@ export default class Operator extends Component {
   }
 
   render() {
-    const { messages, clientWriting, operatorWriting, discussion_id } =
+    const { messages, clientWriting, operatorWriting, discussion_id, prepared } =
       this.state;
 
+      
     return (
-      <Container>
-        <Row>
-          <Col>
-            <ChatDiscussion
-              messages={messages}
-              clientWriting={clientWriting}
-              operatorWriting={operatorWriting}
-              handleClickOption={this.handleSend}
-            />
-            {discussion_id && (
-              <ChatInput
-                handleSend={this.handleSend}
-                updateKeyUp={this.updateKeyUp}
-              />
-            )}
-            {!discussion_id && "No discussion ID"}
-          </Col>
-          <Col>
-            <h3>Prepared statements</h3>
-            <ul className="list-group">
-              {preparedStatements.map((question, key) => (
-                <li
-                  className="list-group-item"
-                  key={key}
-                  onClick={() => this.preparedMessage(question)}
-                >
-                  {question.message}
-                </li>
-              ))}
-            </ul>
-          </Col>
-          <Col>
-            <h3>Prepared questions</h3>
-            <ul className="list-group">
-              {preparedQuestions.map((question, key) => (
-                <li
-                  className="list-group-item"
-                  key={key}
-                  onClick={() => this.preparedMessage(question)}
-                >
-                  {question.message}
-                </li>
-              ))}
-            </ul>
-          </Col>
-          <Col>
-            <h3>Prepared answers</h3>
-            <ul className="list-group">
-              {preparedAnswers.map((question, key) => (
-                <li
-                  className="list-group-item"
-                  key={key}
-                  onClick={() => this.preparedMessage(question)}
-                >
-                  {question.message}
-                </li>
-              ))}
-            </ul>
-          </Col>
-        </Row>
-      </Container>
+        <ChatWrapper panel= {<Panel prepared={prepared} onClick={this.preparedMessage}/>}>
+          <div className="contact-profile">
+            <p>Client</p>
+          </div>
+          <ChatDiscussion
+            messages={messages}
+            clientWriting={clientWriting}
+            operatorWriting={operatorWriting}
+            handleClickOption={this.handleSend}
+          />
+          <div className="message-input">
+            <div className="wrap">
+              {discussion_id && (
+                <ChatInput
+                  handleSend={this.handleSend}
+                  updateKeyUp={this.updateKeyUp}
+                />
+              )}
+              {!discussion_id && "No discussion ID"}
+            </div>
+          </div>
+        </ChatWrapper>
     );
   }
 }

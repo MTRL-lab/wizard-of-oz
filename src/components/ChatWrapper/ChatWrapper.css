@@ -1,0 +1,113 @@
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #27ae60;
+    font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+    font-size: 1em;
+    letter-spacing: 0.1px;
+    color: #32465a;
+    text-rendering: optimizeLegibility;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+}
+
+.chat {
+    width: 95%;
+    min-width: 360px;
+    max-width: 1000px;
+    height: 92vh;
+    min-height: 300px;
+    max-height: 720px;
+    background: #e6eaea;
+}
+
+.sidepanel {
+    float: left;
+    min-width: 280px;
+    max-width: 340px;
+    width: 40%;
+    height: 100%;
+    background: #2c3e50;
+    color: #f5f5f5;
+    overflow: hidden;
+    position: relative;
+}
+
+.sidepanel ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.sidepanel .questions {
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.sidepanel .questions ul li {
+    position: relative;
+    padding: 10px 10px 15px 10px;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.content {
+    width: 100%;
+    float: right;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.panel .content {
+    width: 60%;
+    position: relative
+}
+
+.contact-profile {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    background: #f5f5f5;
+}
+
+.contact-profile img {
+    width: 40px;
+    border-radius: 50%;
+    float: left;
+    margin: 9px 12px 0 9px;
+}
+
+.contact-profile p {
+    float: left;
+}
+
+.message-input {
+    width: 100%;
+}
+
+.content .message-input .wrap button {
+    border: none;
+    padding: 12px 0;
+    cursor: pointer;
+    background: #32465a;
+    color: #f5f5f5;
+    min-width: 50px;
+    float: right;
+}
+
+.content .message-input .wrap textarea {
+    font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+    float: left;
+    border: none;
+    width: calc(100% - 50px);
+    padding: 11px 32px 10px 8px;
+    font-size: 0.8em;
+    color: #32465a;
+}
+
+.content .message-input .wrap textarea:focus {
+    outline: none;
+}

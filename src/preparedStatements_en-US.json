@@ -33,7 +33,7 @@
         }
     ],
 
-    "preparedAnswers": [{
+    "errors": [{
             "message": "I am sorry but I did not understand..."
         },
         {

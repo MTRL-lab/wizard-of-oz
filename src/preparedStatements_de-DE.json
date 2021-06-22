@@ -1,0 +1,52 @@
+{
+    "preparedStatements": [{
+            "message": "Servus, ich bin Frank AI Wright, und bin ein Künstliche Intelligenz-Enwurf Bot. Ich möchte mit Ihnen über die Gestaltung Ihres Traumhauses sprechen."
+        },
+        {
+            "message": "Lass es uns ausprobieren! Bitte nennen Sie mir Ihren Namen. Klicken Sie auf die Sprechtaste und sagen Sie Ihren Namen."
+        },
+        {
+            "message": "Wie fühlst du dich heute?"
+        }
+    ],
+    "preparedQuestions": [{
+            "message": "Was sollen wir planen?"
+        },
+
+        {
+            "message": "Wo befindet sich das Grundstück/die Wohnung?"
+        },
+        {
+            "message": "Was machst du außerhalb der Arbeit?"
+        },
+        {
+            "message": "Wer wird diesen Platz nutzen?"
+        },
+        {
+            "message": "Wie sieht der Tagesablauf für den neuen Raum aus? Welche Aktivitäten sehen Sie regelmäßig?"
+        },
+        {
+            "message": "Unterhältst du oft? Beschreibe den Hinterhof."
+        },
+        {
+            "message": "Welche Ideen haben Sie für Design oder Materialien?"
+        }
+    ],
+
+    "errors": [{
+            "message": "Es tut mir leid, aber ich habe es nicht verstanden..."
+        },
+        {
+            "Nachricht": "Ja"
+        },
+        {
+            "message": "Das ist kompliziert."
+        },
+        {
+            "message": "Interessant, kannst du das näher erläutern?"
+        },
+        {
+            "message": "OK, kannst du mir mehr sagen?"
+        }
+    ]
+}

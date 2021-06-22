@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-import { Container, Col, Row } from "react-bootstrap";
 import { io } from "socket.io-client";
+import { Modal, Button } from "react-bootstrap";
+import { ReactMic } from "react-mic";
+
+import { ChatDiscussion } from "../components/ChatDiscussion";
+import { ChatWrapper } from "../components/ChatWrapper";
 
 import { url } from "../lib/api";
-import { ChatDiscussion } from "../components/ChatDiscussion";
-// import { VideoCapture } from "../components/VideoCapture";
-import { ReactMic } from "react-mic";
+
+import logo from "./../components/ChatDiscussion/logo.png";
 
 const connectMessage = () => {
   return {
@@ -26,6 +29,39 @@ const convertToBase64 = (blob) => {
   });
 };
 
+const RecordButton = function (props) {
+  return (
+    <button type="button" style={{ width: "100%" }} {...props}>
+      Click to speak
+    </button>
+  );
+};
+
+const RecordingButton = function (props) {
+  return (
+    <button
+      type="button"
+      style={{ width: "100%", backgroundColor: "red" }}
+      {...props}
+    >
+      Click to stop
+    </button>
+  );
+};
+
+const SendingButton = function (props) {
+  return (
+    <button
+      disabled={true}
+      type="button"
+      style={{ width: "100%", backgroundColor: "grey" }}
+      {...props}
+    >
+      Sending...
+    </button>
+  );
+};
+
 export default class Chat extends Component {
   state = {
     messages: [],
@@ -35,7 +71,9 @@ export default class Chat extends Component {
     audio: [],
     record: false,
     sending: false,
-    currentAudio:null,
+    currentAudio: null,
+    showModal: true,
+    language: null,
   };
 
   isPlaying = false;
@@ -64,6 +102,8 @@ export default class Chat extends Component {
     this.socket.on("clientSaid", (message) => {
       const { messages } = this.state;
 
+      console.log("Client said", message);
+
       messages.push(message);
 
       this.setState({ messages, clientWriting: false, sending: false });
@@ -86,6 +126,8 @@ export default class Chat extends Component {
     this.socket.on("operatorSaid", (message) => {
       const { messages, audio } = this.state;
 
+      console.log("Operator said", message);
+
       messages.push(message);
       audio.push(`${url}/${message.audio}`);
 
@@ -93,6 +135,8 @@ export default class Chat extends Component {
         messages,
         audio,
         operatorWriting: false,
+        clientWriting: false,
+        sending: false,
       });
       this.playAudio();
     });
@@ -109,23 +153,27 @@ export default class Chat extends Component {
         this.setState({ operatorWriting: false });
       }, 2500);
     });
-
-    // create session and start discussion
-    this.socket.emit("clientConnected");
   }
 
   handleSend = (messageToServer) => {
-    const { discussion_id } = this.state;
-    
+    const { discussion_id, language } = this.state;
+
     this.socket.emit("clientSay", {
       discussion_id,
       message: messageToServer,
+      language,
     });
+  };
+
+  onclickRecording = () => {
+    const { record } = this.state;
+    if (record) this.stopRecording();
+    else this.startRecording();
   };
 
   startRecording = () => {
     this.setState({ record: true });
-    this.socket.emit("clientWriting");
+    this.clearAudio();
   };
 
   stopRecording = () => {
@@ -133,37 +181,49 @@ export default class Chat extends Component {
   };
 
   onStop = (recordedBlob) => {
+    const { discussion_id, language } = this.state;
     this.setState({ sending: true });
 
-    const { discussion_id } = this.state;
     convertToBase64(recordedBlob.blob).then((base64) => {
       const json = {
         discussion_id,
         audio: base64,
+        language,
       };
 
+      console.log("ClientVoice", json);
       this.socket.emit("clientVoice", json);
     });
   };
 
   playAudio = () => {
-    if (!this.isPlaying){
+    if (!this.isPlaying) {
       this.audioPlayEnded();
     }
-  }
+  };
   audioPlayStarted = () => {
-    this.isPlaying=true
-  }
+    this.isPlaying = true;
+  };
 
   audioPlayEnded = () => {
-    const{ audio} = this.state;
-    this.isPlaying=false
+    const { audio } = this.state;
+    this.isPlaying = false;
     if (!audio.length) {
-      return
+      return;
     }
-    const currentAudio = audio.shift()
-   
-    this.setState({currentAudio})
+    const currentAudio = audio.shift();
+
+    this.setState({ currentAudio });
+  };
+
+  clearAudio = () => {
+    this.setState({ audio: [], currentAudio: null });
+  };
+
+  chooseLanguage = (language) => {
+    this.setState({ language, showModal: false });
+    // create session and start discussion
+    this.socket.emit("clientConnected", { language });
   };
 
   render() {
@@ -174,58 +234,75 @@ export default class Chat extends Component {
       currentAudio,
       record,
       sending,
+      showModal,
     } = this.state;
 
-
     return (
-      <Container>
-        <Row>
-          <Col>
-            {currentAudio && (
-              <audio
-                src={currentAudio}
-                autoPlay={true}
-                onPlay={this.audioPlayStarted}
-                onEnded={this.audioPlayEnded}
-              />
-            )}
-
-            <ReactMic
-              record={record}
-              className="sound-wave"
-              onStop={this.onStop}
-              strokeColor="#000000"
-              width="300"
-              visualSetting="sinewave"
-              echoCancellation={true} // defaults -> false
-              autoGainControl={true} // defaults -> false
-              noiseSuppression={true} // defaults -> false
-            />
-            <br />
-            <button
-              disabled={sending}
-              onMouseDown={this.startRecording}
-              onMouseUp={this.stopRecording}
-              type="button"
-              className="btn-primary"
+      <ChatWrapper>
+        <Modal show={showModal}>
+          <Modal.Header>
+            <Modal.Title>Choose Language</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>What language you prefer?</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={() => this.chooseLanguage("en-US")}
             >
-              Speak
-            </button>
-          </Col>
-          <Col>
-            <ChatDiscussion
-              messages={messages}
-              clientWriting={clientWriting}
-              operatorWriting={operatorWriting}
-              handleClickOption={this.handleSend}
-            />
-            {/* <ChatInput
-              handleSend={this.handleSend}
-              updateKeyUp={this.updateKeyUp}
-            /> */}
-          </Col>
-        </Row>
-      </Container>
+              English
+            </Button>{" "}
+            <Button
+              variant="primary"
+              onClick={() => this.chooseLanguage("de-DE")}
+            >
+              Deutsch
+            </Button>{" "}
+          </Modal.Footer>
+        </Modal>
+        <div style={{ display: "none" }}>
+          <ReactMic
+            record={record}
+            className="sound-wave"
+            onStop={this.onStop}
+            strokeColor="#000000"
+            visualSetting="sinewave"
+            echoCancellation={true} // defaults -> false
+            autoGainControl={true} // defaults -> false
+            noiseSuppression={true} // defaults -> false
+          />
+        </div>
+        {currentAudio && (
+          <audio
+            src={currentAudio}
+            autoPlay={true}
+            onPlay={this.audioPlayStarted}
+            onEnded={this.audioPlayEnded}
+          />
+        )}
+
+        <div className="contact-profile">
+          <img src={logo} alt="" />
+          <p>Frank AI Wright</p>
+        </div>
+        <ChatDiscussion
+          messages={messages}
+          clientWriting={clientWriting}
+          operatorWriting={operatorWriting}
+          handleClickOption={this.handleSend}
+        />
+
+        <div className="message-input">
+          <div className="wrap">
+            {sending ? (
+              <SendingButton />
+            ) : record ? (
+              <RecordingButton onClick={this.onclickRecording} />
+            ) : (
+              <RecordButton onClick={this.onclickRecording} />
+            )}
+          </div>
+        </div>
+      </ChatWrapper>
     );
   }
 }

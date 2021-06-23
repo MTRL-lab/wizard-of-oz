@@ -1,9 +1,12 @@
 .messages {
     height: auto;
-    min-height: calc(100% - 93px);
-    max-height: calc(100% - 93px);
+    min-height: calc(100% - 110px);
+    max-height: calc(100% - 110px);
     overflow-y: scroll;
     overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .messages ul li {
@@ -48,6 +51,5 @@
     display: inline-block;
     padding: 10px 15px;
     border-radius: 20px;
-    max-width: 205px;
     line-height: 130%;
 }

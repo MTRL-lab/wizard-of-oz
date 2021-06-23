@@ -1,20 +1,9 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import logo from './logo.png'
-import  './ChatMessage.css'
 
-
-const Spinner = function () {
-  return <span className="sk-chase">
-  <span className="sk-chase-dot"></span>
-  <span className="sk-chase-dot"></span>
-  <span className="sk-chase-dot"></span>
-  <span className="sk-chase-dot"></span>
-  <span className="sk-chase-dot"></span>
-  <span className="sk-chase-dot"></span>
-</span>
-}
 
 export default class ChatMessage extends Component {
 
@@ -32,10 +21,10 @@ export default class ChatMessage extends Component {
     let content = "";
 
     if (json.key == 'clientWriting') {
-      content = <Spinner />
+      content =  <FontAwesomeIcon icon={faSpinner} spin={true} />
     }
     else if (json.key == 'operatorWriting') {
-      content = <Spinner />
+      content =  <FontAwesomeIcon icon={faSpinner} spin={true} />
     }
     else if (json.message) {
       

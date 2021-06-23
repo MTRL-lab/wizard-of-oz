@@ -79,15 +79,20 @@ export const speechToText = (audio, languageCode) => {
                 config: {
                     encoding: 'WEBM_OPUS',
                     languageCode: langCodeStt(languageCode),
-                    audioChannelCount: 2
+                    audioChannelCount: 2,
+                    enableAutomaticPunctuation: true,
+                    useEnhanced: true
                 },
                 audio: {
                     content: audio,
                 }
             })
-            .then(([response]) => response.results
-                .map(result => result.alternatives[0].transcript)
-                .join('\n'))
+            .then(([response]) => {
+                log.silly('STT', response)
+                return response.results
+                    .map(result => result.alternatives[0].transcript)
+                    .join('\n')
+            })
     } catch (e) {
         console.error(e)
         throw e

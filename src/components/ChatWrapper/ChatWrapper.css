@@ -71,6 +71,7 @@
     height: 60px;
     line-height: 60px;
     background: #f5f5f5;
+    overflow: hidden;
 }
 
 .contact-profile img {
@@ -95,6 +96,7 @@
     background: #32465a;
     color: #f5f5f5;
     min-width: 50px;
+    min-height: 50px;
     float: right;
 }
 
@@ -102,7 +104,7 @@
     font-family: "proxima-nova", "Source Sans Pro", sans-serif;
     float: left;
     border: none;
-    width: calc(100% - 50px);
+    width: calc(100% - 100px);
     padding: 11px 32px 10px 8px;
     font-size: 0.8em;
     color: #32465a;

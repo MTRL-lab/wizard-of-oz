@@ -56,7 +56,7 @@ const initSocketIO = (io) => {
             operatorSay(io, socket, json, 'operator')
         })
 
-        socket.on("clientSay", (json, cb) => {
+        socket.on("clientSay", (json) => {
 
             Message.create({
                 discussion_id: json.discussion_id,
@@ -64,7 +64,7 @@ const initSocketIO = (io) => {
                 msg: JSON.stringify(json),
                 username: 'client'
             }).then(message => {
-                cb(Message.toChatJson(message))
+                Message.toChatJson(message)
                 io.emit('clientSaid', Message.toChatJson(message))
             })
         })
@@ -99,7 +99,8 @@ const initSocketIO = (io) => {
                     return writeFile(audioPath, bufferValue)
 
                 })
-                .catch(() => {
+                .catch((e) => {
+                    log.info(e)
                     return operatorSay(io, socket, {
                         discussion_id: json.discussion_id,
                         message: errors[0].message,

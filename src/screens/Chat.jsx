@@ -195,7 +195,13 @@ export default class Chat extends Component {
               variant="primary"
               onClick={() => this.chooseLanguage("en-US")}
             >
-              English
+              American English
+            </Button>{" "}
+            <Button
+              variant="primary"
+              onClick={() => this.chooseLanguage("en-UK")}
+            >
+              British English
             </Button>{" "}
             <Button
               variant="primary"
@@ -223,7 +229,7 @@ export default class Chat extends Component {
 
         <div className="contact-profile">
           <img src={logo} alt="" />
-          <p>Frank AI Wright</p>
+          <p>Zaha AI</p>
         </div>
         <ChatDiscussion
           messages={messages}

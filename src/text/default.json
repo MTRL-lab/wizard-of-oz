@@ -1,0 +1,27 @@
+{
+    "hello1": "Hi! My name is Zaha.",
+
+    "hello2": "I'm a design bot and would love to speak with you about a design project of your choice!",
+
+    "letstry": "Let's try it! Press the microphone button and say your name.",
+
+    "what_plan": "What would you like to design?",
+
+    "where": "Where is the project located?",
+
+    "who": "Who will use this space?",
+
+    "what": "What would be the daily routine for the new space?",
+
+    "ideas": "What ideas do you have for the design?",
+
+    "materials": "Do you have specific materials in mind?",
+
+    "yes": "Yes",
+    "complicate": "This is complicated.",
+    "elaborate": "Interesting, can you elaborate?",
+    "more": "OK, can you tell me more?",
+    "understand": "Sorry, but I could not understand this",
+    "error": "I'm sorry, due to a technical error I couldn't understand what you said."
+
+}

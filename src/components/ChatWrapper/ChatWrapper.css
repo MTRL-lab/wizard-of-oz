@@ -13,10 +13,10 @@
 }
 
 .chat {
-    width: 95%;
+    width: 100%;
     min-width: 360px;
     max-width: 1000px;
-    height: 92vh;
+    height: 100vh;
     min-height: 300px;
     max-height: 720px;
     background: #e6eaea;

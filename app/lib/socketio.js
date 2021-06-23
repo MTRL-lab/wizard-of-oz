@@ -6,14 +6,21 @@ import log from './log.js';
 import { Message } from '../models/index.js'
 import { textToSpeech, speechToText } from './voice.js'
 
-let preparedStatements, errors
+let text = []
 
 const loadDefaultText = (lang) => {
-    return readFile(new URL(`../../src/preparedStatements_${lang}.json`,
-            import.meta.url))
-        .then(data => {
-            preparedStatements = JSON.parse(data).preparedStatements
-            errors = JSON.parse(data).errors
+    return Promise.all([
+            readFile(new URL(`../../src/text/default.json`,
+                import.meta.url)),
+            readFile(new URL(`../../src/text/${lang}.json`,
+                import.meta.url))
+        ])
+        .then(([baseJSON, overrideJSON]) => {
+
+            text = JSON.parse(baseJSON);
+            const override = JSON.parse(overrideJSON);
+
+            Object.assign(text, override)
         })
 }
 
@@ -103,7 +110,7 @@ const initSocketIO = (io) => {
                     log.info(e)
                     return operatorSay(io, socket, {
                         discussion_id: json.discussion_id,
-                        message: errors[0].message,
+                        message: text.error,
                         language: json.language
                     })
                 })
@@ -131,24 +138,16 @@ const initSocketIO = (io) => {
                     // the first message a user receives
                     operatorSay(io, socket, {
                         discussion_id,
-                        message: preparedStatements[0].message,
+                        message: text.hello1,
                         language
                     })
                     setTimeout(() => {
                         operatorSay(io, socket, {
                             discussion_id,
-                            message: preparedStatements[2].message,
+                            message: text.hello2,
                             language
                         })
-                    }, 3000)
-
-                    setTimeout(() => {
-                        operatorSay(io, socket, {
-                            discussion_id,
-                            message: preparedStatements[1].message,
-                            language
-                        })
-                    }, 8000)
+                    }, 1000)
                 })
         })
     });

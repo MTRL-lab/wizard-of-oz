@@ -13,15 +13,23 @@ const stt = new SpeechClient();
 const support = {
     'en-US': {
         'tts': 'en-US',
-        'stt': 'en-US'
+        'stt': 'en-US',
+        'ttsName': 'en-US-Wavenet-C'
+    },
+    'en-UK': {
+        'tts': 'en-UK',
+        'stt': 'en-UK',
+        'ttsName': 'en-GB-Wavenet-C'
     },
     'de-DE': {
         'tts': 'de-DE',
-        'stt': 'de-DE'
+        'stt': 'de-DE',
+        'ttsName': 'de-DE-Wavenet-F 	'
     },
     'he-IL': {
         'tts': 'en-US',
-        'stt': 'he-IL'
+        'stt': 'he-IL',
+        'ttsName': 'en-US-Wavenet-C'
     }
 }
 
@@ -33,11 +41,14 @@ export const langCodeStt = (language) => {
     return support[language]['stt']
 }
 
+export const langNameTts = (language) => {
+    return support[language]['ttsName']
+}
 
 
 export const textToSpeech = (text, languageCode) => {
 
-    const ssmlGender = 'MALE';
+    const ssmlGender = 'FEMALE';
     // const effectsProfileId = ['telephony-class-application'];
     const sha = sha1(`${languageCode}_${text}`);
     const fileName = `uploads/${sha}.mp3`
@@ -45,9 +56,11 @@ export const textToSpeech = (text, languageCode) => {
 
         const request = {
             input: { text },
-            voice: { languageCode: langCodeTts(languageCode), ssmlGender },
+            voice: { languageCode: langCodeTts(languageCode), ssmlGender, name: langNameTts(languageCode) },
             audioConfig: { audioEncoding: 'MP3' },
         };
+
+        console.log(request)
 
         return access(fileName)
             .then(() => {

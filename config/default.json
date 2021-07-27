@@ -12,6 +12,9 @@
         "port": 3002
     },
     "sequelizeRebuild": false,
+    "openai": {
+        "key":""
+    },
     "socketIo": {
         "cors": {
             "origin": "http://localhost:3000",

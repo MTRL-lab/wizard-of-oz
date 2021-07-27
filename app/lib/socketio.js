@@ -3,6 +3,7 @@ import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 
 import log from './log.js';
+import {gpt3Say} from './openai.js'
 import { Message } from '../models/index.js'
 import { textToSpeech, speechToText } from './voice.js'
 
@@ -64,15 +65,29 @@ const initSocketIO = (io) => {
         })
 
         socket.on("clientSay", (json) => {
-
+           
             Message.create({
                 discussion_id: json.discussion_id,
                 session_id: socket.id,
                 msg: JSON.stringify(json),
                 username: 'client'
             }).then(message => {
-                Message.toChatJson(message)
-                io.emit('clientSaid', Message.toChatJson(message))
+                const json = Message.toChatJson(message)
+                io.emit('clientSaid',json)
+                return message;
+            }).then(() => {
+                //Initiate open AI call
+                if (json.bot==='gpt3'){
+                    return gpt3Say(json.discussion_id)
+                        .then(responseText => {
+                            operatorSay(io, socket, {
+                                discussion_id:json.discussion_id,
+                                message: responseText,
+                                language:json.language
+                            })
+                        })
+                        
+                }
             })
         })
 

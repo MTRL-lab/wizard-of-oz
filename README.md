@@ -37,6 +37,12 @@ The default configuration settings can be viewed in the `config/default.json` fi
 
 Edit the experiment consent form in : `config/consent.html`
 
+TO have TTS and STT (speech engines) you must get access to Google's could and set up the credentials.
+Import google credentials (example location)
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS="/home/user/Downloads/service-account-file.json"
+
+```
 ## Production
 
 Build the react code and start the web application.

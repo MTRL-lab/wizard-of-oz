@@ -8,6 +8,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const indexRoutes = [
   // { path: '/wizard/', component: Wizard },
   { path: "/chat/", component: Chat ,exact: true },
+  { path: "/bot/", component: Chat ,exact: true, bot:'gpt3' },
+
   { path: "/chatlog/:discussion_id", component: ChatLog ,exact: false},
   { path: "/chatlog/", component: ChatLog ,exact: false},
   { path: "/operator", component: Operator ,exact: true },
@@ -18,7 +20,7 @@ const dom = (
   <Router>
     <Switch>
       {indexRoutes.map((prop, key) => {
-        return <Route path={prop.path} component={prop.component} key={key} exact={prop.exact} />;
+        return <Route path={prop.path} component={() => <prop.component {...prop}/> } key={key} exact={prop.exact} />;
       })}
     </Switch>
   </Router>

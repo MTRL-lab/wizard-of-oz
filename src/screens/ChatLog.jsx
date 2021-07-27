@@ -1,21 +1,24 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import { withRouter} from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
-import api, { url } from "../lib/api.js";
-import { ChatMessage } from "../components/ChatDiscussion";
+import api from "../lib/api.js"; //{ url }
+import { ChatDiscussion } from "../components/ChatDiscussion";
+import { ChatWrapper } from "../components/ChatWrapper";
 
-const videoStyle = {
-  width: "100%",
-  hight: "auto",
-};
+import logo from "./../components/ChatDiscussion/logo.png";
 
+// const videoStyle = {
+//   width: "100%",
+//   hight: "auto",
+// };
 
 class ChatLog extends Component {
   state = {
     groupedMessages: [],
     sessions: [],
+    redirect: null,
   };
 
   static propTypes = {
@@ -51,7 +54,10 @@ class ChatLog extends Component {
   getMessages = (discussion_id) => {
     api
       .get("/messages", { params: { discussion_id } })
-      .then((result) => this.groupMessagesWithVideo(result))
+      .then((result) => {
+        this.setState({ messages: result.data })
+        return this.groupMessagesWithVideo(result)
+      })
       .then((groupedMessages) => this.setState({ groupedMessages }))
       .catch((error) => console.error(error));
   };
@@ -79,59 +85,48 @@ class ChatLog extends Component {
     this.getMessages(discussion_id);
   }
 
-  onChange = (id) => {
-    id
-  }
+  onChange = (e) => {
+    this.getMessages(e.target.value);
+  };
 
   render() {
-    const { groupedMessages, sessions } = this.state;
+    const { groupedMessages, messages, sessions, redirect } = this.state;
 
+    if (redirect) {
+      return <Redirect to={`/chatlog/?discussion_id=${redirect}`} />;
+    }
     return (
       <Container>
         <h1>Chat log</h1>
+
         <Row>
           <Col xs={groupedMessages.length ? 3 : 12}>
             <h4>Session list</h4>
-            <select>
-            {sessions.map((session, i) => {
-              const date = moment(session.start);
-              return (
-                <option key={i} onChange={()=>this.onChange(session.discussion_id)}>
-                  {session.discussion_id} | 
-                  {date.format("DD/MM/YYYY")} | {session.num} messages
-                  </option>
-              );
-            })}
-            </select>
-          </Col>
-          {groupedMessages.length > 0 && (
-            <Col xs="9">
-              {groupedMessages.map((group, i) => {
+            <select onChange={this.onChange}>
+              {sessions.map((session, i) => {
+                const date = moment(session.start);
                 return (
-                  <Row key={i}>
-                    <Col xs="6">
-                      {group.video && (
-                        <video
-                          style={videoStyle}
-                          controls
-                        >
-                          <source
-                            src={`${url}/uploads/video${group.video}.mp4`}
-                            type="video/mp4"
-                          />
-                        </video>
-                      )}
-                    </Col>
-                    <Col xs="6">
-                      {group.messages.map((message, j) => (
-                        <ChatMessage key={j} {...message} />
-                      ))}
-                    </Col>
-                  </Row>
+                  <option key={i} value={session.discussion_id}>
+                    {session.discussion_id} |{date.format("DD/MM/YYYY")} |{" "}
+                    {session.num} messages
+                  </option>
                 );
               })}
-            </Col>
-          )}
+            </select>
+          </Col>
+          <Col xs="9">
+            <ChatWrapper>
+              <div className="contact-profile">
+                <img src={logo} alt="" />
+                <p>Architecture bot</p>
+              </div>
+              <ChatDiscussion
+                messages={messages}
+                clientWriting={false}
+                operatorWriting={false}
+              />
+            </ChatWrapper>
+          </Col>
         </Row>
       </Container>
     );

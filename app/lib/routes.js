@@ -4,6 +4,7 @@ import path from 'path';
 import { db } from './db.js'
 import wrapper from './route_wrapper.js'
 import { Consent, Message } from '../models/index.js'
+import {gpt3Brief} from './openai.js'
 
 const api = express.Router();
 
@@ -65,6 +66,10 @@ api.get('/consent_form/', wrapper(() => {
             content: JSON.stringify(content)
         }
     })
+}))
+
+api.get('/brief/', wrapper((req) => {
+    return req.query.discussion_id ? gpt3Brief(req.query.discussion_id) : null
 }))
 
 export default api

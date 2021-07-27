@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { io } from "socket.io-client";
 import { Modal, Button } from "react-bootstrap";
 
@@ -9,7 +10,7 @@ import {
 } from "../components/ChatDiscussion";
 import { ChatWrapper } from "../components/ChatWrapper";
 
-import { url } from "../lib/api";
+import api, { url } from "../lib/api";
 
 import logo from "./../components/ChatDiscussion/logo.png";
 
@@ -32,6 +33,7 @@ export default class Chat extends Component {
     currentAudio: null,
     showModal: true,
     language: null,
+    brief: [],
   };
 
   isPlaying = false;
@@ -65,20 +67,8 @@ export default class Chat extends Component {
       messages.push(message);
 
       this.setState({ messages, clientWriting: false, sending: false });
+      this.getBrief();
     });
-
-    // Show writing animation
-    // this.socket.on("clientWriting", () => {
-    //   this.setState({ clientWriting: true });
-
-    //   if (this.clientInterval) {
-    //     clearInterval(this.clientInterval);
-    //   }
-
-    //   this.clientInterval = setTimeout(() => {
-    //     this.setState({ clientWriting: false });
-    //   }, 2500);
-    // });
 
     // get messages from operator
     this.socket.on("operatorSaid", (message) => {
@@ -113,14 +103,29 @@ export default class Chat extends Component {
     });
   }
 
+  getBrief = () => {
+    const { discussion_id } = this.state;
+
+    return api
+      .get(`/brief?discussion_id=${discussion_id}`)
+      .then((response) => {
+        this.setState({ brief: response.data });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   updateKeyUp = () => {
-    this.socket.emit("clientWriting")
-  }
+    this.socket.emit("clientWriting");
+  };
 
   handleSend = (messageToServer) => {
+    const { bot } = this.props;
     const { discussion_id, language } = this.state;
 
     this.socket.emit("clientSay", {
+      bot,
       discussion_id,
       message: messageToServer,
       language,
@@ -181,6 +186,7 @@ export default class Chat extends Component {
       record,
       sending,
       showModal,
+      brief,
     } = this.state;
 
     return (
@@ -203,7 +209,7 @@ export default class Chat extends Component {
             >
               British English
             </Button>{" "}
-            <Button
+            {/* <Button
               variant="primary"
               onClick={() => this.chooseLanguage("de-DE")}
             >
@@ -214,7 +220,7 @@ export default class Chat extends Component {
               onClick={() => this.chooseLanguage("he-IL")}
             >
               עברית
-            </Button>{" "}
+            </Button>{" "} */}
           </Modal.Footer>
         </Modal>
 
@@ -229,7 +235,11 @@ export default class Chat extends Component {
 
         <div className="contact-profile">
           <img src={logo} alt="" />
-          <p>Zaha AI</p>
+          <p>Architecture bot</p>
+        </div>
+        <div className="brief">
+          <h6>The design brief:</h6>
+          <ul>{brief && brief.map((item, i) => <li key={i}>{item}</li>)}</ul>
         </div>
         <ChatDiscussion
           messages={messages}
@@ -256,3 +266,6 @@ export default class Chat extends Component {
     );
   }
 }
+Chat.propTypes = {
+  bot: PropTypes.string,
+};

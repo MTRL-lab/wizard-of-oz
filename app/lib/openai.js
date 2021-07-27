@@ -60,20 +60,17 @@ export const gpt3Say = (discussion_id) => {
 };
 
 export const gpt3Brief = (discussion_id) => {
-  return getDiscussion(discussion_id)
-  .then((messages) => {
-      if (messages.length <8){
-          throw 'Not enough data'
-      }
+  return getDiscussion(discussion_id).then((messages) => {
+    if (messages.length < 8) {
+      return "Not enough data";
+    }
     const discussion = messages
       .map((message) => {
         const json = JSON.parse(message.get("msg"));
         return `${json.message}. `;
       })
       .join("\n");
-      return discussion;
-    })
-  .then((discussion) => {
+
     const prompt = [
       `Convert this Q&A into a list of design requirements:`,
       discussion,
@@ -97,7 +94,7 @@ export const gpt3Brief = (discussion_id) => {
       })
       .then((response) => {
         log.info("openAI response:", response.data);
-        console.trace('')
+        console.trace("");
         return response.data.choices[0].text
           .trim()
           .split(/\n|-/)

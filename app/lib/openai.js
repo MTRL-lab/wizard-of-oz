@@ -62,7 +62,7 @@ export const gpt3Say = (discussion_id) => {
 export const gpt3Brief = (discussion_id) => {
   return getDiscussion(discussion_id).then((messages) => {
     if (messages.length < 8) {
-      return "Not enough data";
+      return ["Not enough data"];
     }
     const discussion = messages
       .map((message) => {

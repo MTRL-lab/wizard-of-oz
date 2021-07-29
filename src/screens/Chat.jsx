@@ -1,8 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { io } from "socket.io-client";
 import { Modal, Button } from "react-bootstrap";
 
+import { Brief } from "../components/Brief";
 import {
   ChatDiscussion,
   ChatInput,
@@ -10,8 +11,7 @@ import {
 } from "../components/ChatDiscussion";
 import { ChatWrapper } from "../components/ChatWrapper";
 
-import api, { url } from "../lib/api";
-
+import { url } from "../lib/api";
 import logo from "./../components/ChatDiscussion/logo.png";
 
 const connectMessage = () => {
@@ -21,6 +21,7 @@ const connectMessage = () => {
   };
 };
 
+const maxMessages = 50;
 export default class Chat extends Component {
   state = {
     messages: [],
@@ -33,7 +34,7 @@ export default class Chat extends Component {
     currentAudio: null,
     showModal: true,
     language: null,
-    brief: [],
+    experimentActive: true,
   };
 
   isPlaying = false;
@@ -67,7 +68,6 @@ export default class Chat extends Component {
       messages.push(message);
 
       this.setState({ messages, clientWriting: false, sending: false });
-      this.getBrief();
     });
 
     // get messages from operator
@@ -78,6 +78,8 @@ export default class Chat extends Component {
 
       messages.push(message);
       audio.push(`${url}/${message.audio}`);
+
+      if (messages.length > maxMessages) this.experimentDone();
 
       this.setState({
         messages,
@@ -103,17 +105,8 @@ export default class Chat extends Component {
     });
   }
 
-  getBrief = () => {
-    const { discussion_id } = this.state;
-
-    return api
-      .get(`/brief?discussion_id=${discussion_id}`)
-      .then((response) => {
-        this.setState({ brief: response.data });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  experimentDone = () => {
+    this.setState({ experimentActive: false });
   };
 
   updateKeyUp = () => {
@@ -179,6 +172,7 @@ export default class Chat extends Component {
 
   render() {
     const {
+      discussion_id,
       messages,
       clientWriting,
       operatorWriting,
@@ -186,7 +180,7 @@ export default class Chat extends Component {
       record,
       sending,
       showModal,
-      brief,
+      experimentActive,
     } = this.state;
 
     return (
@@ -233,35 +227,37 @@ export default class Chat extends Component {
           />
         )}
 
-        <div className="contact-profile">
-          <img src={logo} alt="" />
-          <p>Architecture bot</p>
-        </div>
-        <div className="brief">
-          <h6>The design brief:</h6>
-          <ul>{brief && brief.map((item, i) => <li key={i}>{item}</li>)}</ul>
-        </div>
-        <ChatDiscussion
-          messages={messages}
-          clientWriting={clientWriting}
-          operatorWriting={operatorWriting}
-          handleClickOption={this.handleSend}
-        />
-
-        <div className="message-input">
-          <div className="wrap">
-            <ChatInput
-              handleSend={this.handleSend}
-              updateKeyUp={this.updateKeyUp}
+        {experimentActive && (
+          <Fragment>
+            <div className="contact-profile">
+              <img src={logo} alt="" />
+              <p>Architecture bot</p>.
+              <small>The chat will conclude automatically in {maxMessages- messages.length} messages.</small>
+              <Button style={{float:"right"}}size="sm" variant="outline-danger" onClick={() => this.experimentDone()}>X Finish chat now</Button>
+            </div>
+            <ChatDiscussion
+              messages={messages}
+              clientWriting={clientWriting}
+              operatorWriting={operatorWriting}
+              handleClickOption={this.handleSend}
             />
+            <div className="message-input">
+              <div className="wrap">
+                <ChatInput
+                  handleSend={this.handleSend}
+                  updateKeyUp={this.updateKeyUp}
+                />
 
-            <VoiceInput
-              sending={sending}
-              record={record}
-              handle={this.handleSendRecording}
-            />
-          </div>
-        </div>
+                <VoiceInput
+                  sending={sending}
+                  record={record}
+                  handle={this.handleSendRecording}
+                />
+              </div>
+            </div>
+          </Fragment>
+        )}
+        {!experimentActive && <Brief discussion_id={discussion_id} />}
       </ChatWrapper>
     );
   }

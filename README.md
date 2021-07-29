@@ -41,8 +41,13 @@ TO have TTS and STT (speech engines) you must get access to Google's could and s
 Import google credentials (example location)
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS="/home/user/Downloads/service-account-file.json"
-
 ```
+
+Run database migrations:
+```bash
+npx sequelize-cli db:migrate
+```
+
 ## Production
 
 Build the react code and start the web application.

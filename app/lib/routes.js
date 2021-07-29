@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { db } from './db.js'
 import wrapper from './route_wrapper.js'
-import { Consent, Message } from '../models/index.js'
-import {gpt3Brief} from './openai.js'
+import { Consent, Message,Brief } from '../models/index.js'
+import {brief} from './ai.js'
 
 const api = express.Router();
 
@@ -69,7 +69,9 @@ api.get('/consent_form/', wrapper(() => {
 }))
 
 api.get('/brief/', wrapper((req) => {
-    return req.query.discussion_id ? gpt3Brief(req.query.discussion_id) : null
+    return req.query.discussion_id ? brief(req.query.discussion_id) : null
 }))
+
+api.post('/brief/', wrapper((req) => Promise.all(req.body.map(item => Brief.create(item)))))
 
 export default api

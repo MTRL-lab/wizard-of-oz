@@ -3,7 +3,7 @@ import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 
 import log from './log.js';
-import {gpt3Say} from './openai.js'
+import {say} from './ai.js'
 import { Message } from '../models/index.js'
 import { textToSpeech, speechToText } from './voice.js'
 
@@ -78,7 +78,7 @@ const initSocketIO = (io) => {
             }).then(() => {
                 //Initiate open AI call
                 if (json.bot==='gpt3'){
-                    return gpt3Say(json.discussion_id)
+                    return say(json.discussion_id)
                         .then(responseText => {
                             operatorSay(io, socket, {
                                 discussion_id:json.discussion_id,

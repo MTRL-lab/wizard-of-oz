@@ -69,8 +69,8 @@ export const gpt3Say = (discussion_id) => {
     .then((messages) => parseDiscussion(messages, 12))
     .then((discussion) => {
       const prompt = [
-        `The following is a discussion between an architect, interior designer and their client. The architect and designer are a friendly and helpful team. The Architect asks the client many questions to learn about the style of the house, roof, garden, number of stories and budget.`,
-        `The Designer is concerned about the living room, kitchen, storage, bathrooms, toilets and office.`,
+        `The following is a discussion between an architect, designer and their client. The architect and designer are a friendly and helpful team. The architect asks the client many questions to learn about the style of the house, roof, garden, number of stories and budget.`,
+        `The designer is concerned about the living room, kitchen, storage, bathrooms, toilets and office.`,
         // `The Architect wants to know how to design the project, like number of bedrooms, public spaces, kitchen, style and amenities.`,
         // `The following is a conversation between an architect and his client. The architect wants to know everything about the project requirements.`,
         // `Here are some questions that the architect might ask:`,

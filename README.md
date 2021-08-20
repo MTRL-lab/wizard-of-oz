@@ -54,7 +54,7 @@ Build the react code and start the web application.
 
 ```sh
 npm run build
-npm start
+node wizard-of-oz.js
 ```
 
 ## Development
@@ -68,7 +68,7 @@ Another option is to run the code with an https proxy.
 Run the node application:
 
 ```
-node wizard-of-oz.js
+npm start
 ```
 
 Run the React development server in parallel:

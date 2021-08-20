@@ -28,14 +28,14 @@ const loadDefaultText = (lang) => {
 
 const operatorSay = (io, socket, json) => {
     try {
-        textToSpeech(json.message, json.language)
+        textToSpeech(json.message, json.language, json.username)
 
         .then((fileName) => {
                 return Message.create({
                     discussion_id: json.discussion_id,
                     session_id: socket.id,
                     msg: JSON.stringify(json),
-                    username: 'operator'
+                    username: json.username
 
                 }).then(message => {
                     message.audio = fileName
@@ -43,7 +43,7 @@ const operatorSay = (io, socket, json) => {
                 })
             })
             .then(message => {
-                io.emit('operatorSaid', Message.toChatJson(message))
+                io.to(socket.id).emit('operatorSaid', Message.toChatJson(message))
             })
 
     } catch (e) {
@@ -73,17 +73,27 @@ const initSocketIO = (io) => {
                 username: 'client'
             }).then(message => {
                 const json = Message.toChatJson(message)
-                io.emit('clientSaid',json)
+                io.to(socket.id).emit('clientSaid',json)
                 return message;
             }).then(() => {
                 //Initiate open AI call
                 if (json.bot==='gpt3'){
                     return say(json.discussion_id)
-                        .then(responseText => {
-                            operatorSay(io, socket, {
-                                discussion_id:json.discussion_id,
-                                message: responseText,
-                                language:json.language
+                        .then(responseTexts => {
+                            log.silly('responseTexts', responseTexts)
+
+                            responseTexts.forEach((responseText,i) => {
+                            
+                                setTimeout(() => {
+                                        
+                                    operatorSay(io, socket, {
+                                        discussion_id:json.discussion_id,
+                                        message: responseText.text,
+                                        language:json.language,
+                                        username: responseText.username
+                                    
+                                    })
+                                }, i*1000)
                             })
                         })
                         
@@ -116,7 +126,7 @@ const initSocketIO = (io) => {
                     })
                 })
                 .then(message => {
-                    io.emit('clientSaid', Message.toChatJson(message))
+                    io.to(socket.id).emit('clientSaid', Message.toChatJson(message))
                     const audioPath = path.join(path.resolve(''), "uploads", `audio${message.id}.webm`);
                     return writeFile(audioPath, bufferValue)
 
@@ -154,15 +164,27 @@ const initSocketIO = (io) => {
                     operatorSay(io, socket, {
                         discussion_id,
                         message: text.hello1,
-                        language
+                        language,
+                        username: 'architect'
                     })
+
                     setTimeout(() => {
                         operatorSay(io, socket, {
                             discussion_id,
                             message: text.hello2,
-                            language
+                            language,
+                            username: 'designer'
                         })
                     }, 1000)
+                    
+                    setTimeout(() => {
+                        operatorSay(io, socket, {
+                            discussion_id,
+                            message: text.hello3,
+                            language,
+                            username: 'architect'
+                        })
+                    }, 2000)
                 })
         })
     });

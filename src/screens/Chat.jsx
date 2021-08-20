@@ -233,7 +233,7 @@ export default class Chat extends Component {
               <img src={logo} alt="" />
               <p>Architecture bot</p>.
               <small>The chat will conclude automatically in {maxMessages- messages.length} messages.</small>
-              <Button style={{float:"right"}}size="sm" variant="outline-danger" onClick={() => this.experimentDone()}>X Finish chat now</Button>
+              <Button style={{float:"right"}}size="sm" variant="outline-danger" onClick={() => this.experimentDone()}>Finish chat and make brief</Button>
             </div>
             <ChatDiscussion
               messages={messages}

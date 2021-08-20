@@ -1,7 +1,7 @@
 {
-    "hello1": "Hello, I am your architect. Let us discuss your architecture project",
-
-    "hello2": "I would like to know what kind of project you had in mind?",
+    "hello1": "Hi, I am your architect.",
+    "hello2": "and I am your designer.",
+    "hello3": "Let us discuss your architecture project. I would like to know what kind of project you had in mind?",
 
     "letstry": "Let's try it! Press the microphone button and say your name.",
 

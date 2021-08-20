@@ -52,7 +52,7 @@ const parseResponse = (text) => {
       }
     } else {
       // if we have no speaker
-      if (!fragments[1].trim()) {
+      if (!fragments[1]) {
         acc[acc.length - 1].text += ` ${fragments[0].trim()}`;
         console.log("concat");
       } else {

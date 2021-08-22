@@ -6,13 +6,13 @@ import { Message } from "../../models/index.js";
 const apiKey = config.get("openai.key");
 const openai = new OpenAI(apiKey);
 
-const userName = (key) => key;
+const userNames = ['architect','designer'];
 
 const parseDiscussion = (messages, limit = 0) =>
   messages
     .map((message) => {
       const json = JSON.parse(message.get("msg"));
-      return `${userName(message.get("username"))}: ${json.message}`;
+      return `${message.get("username")}: ${json.message}`;
     })
     .slice(limit ? -limit : 0)
     .join("\n")
@@ -36,41 +36,55 @@ const parseResponse = (text) => {
     // make sure no to accept output if there is junk
     if (!cur || junk || currentIndex > 3) return acc;
 
-    const fragments = cur.split(":");
+    const fragments = cur.split(/:|-|–]/);
 
-    console.log(fragments);
 
-    if (
-      cur.toLowerCase().match(/^architect/g) ||
-      cur.toLowerCase().match(/^designer/g)
-    ) {
-      if (fragments[1].trim()) {
-        acc.push({
-          username: fragments[0].toLowerCase(),
-          text: fragments[1].trim(),
-        });
-      }
-    } else {
-      // if we have no speaker
-      if (!fragments[1]) {
-        acc[acc.length - 1].text += ` ${fragments[0].trim()}`;
-        console.log("concat");
-      } else {
-        console.log("junk");
-        junk = true;
+    // if we have no speaker, and it's not the first iteration, 
+    // it might be a continuation of the previous message
+    if (!fragments[1] && currentIndex) {
+      acc[acc.length - 1].text += ` ${fragments[0].trim()}`;
+      console.log("concat");
+      return acc;
+    }
+
+    const text = fragments.reduce((acc, cur, index) => {
+      if (index) acc += ` ${cur.trim()}`;
+      return acc;
+    }, "");
+    console.log(fragments, text);
+
+    // check if username is in the line
+    for (let i=0; userNames[i]; i++){
+      const regex = new RegExp(`^${userNames[i]}`);
+      if (cur.toLowerCase().match(regex)) {
+        if (text.trim()) {
+          acc.push({
+            username: fragments[0].toLowerCase(),
+            text: text.trim(),
+          });
+          return acc;
+        }
       }
     }
-    return acc;
+
+    console.log("junk");
+    junk = true;
+    return acc; 
+    
   }, []);
 };
 
 export const gpt3Say = (discussion_id) => {
+  
+  const speaker = userNames[Math.floor(Math.random() * userNames.length)];
+
   return getDiscussion(discussion_id)
     .then((messages) => parseDiscussion(messages, 12))
     .then((discussion) => {
+      
       const prompt = [
-        `The following is a discussion between an architect, designer and their client. The architect and designer are a friendly and helpful team. The architect asks the client many questions to learn about the style of the house, roof, garden, number of stories and budget.`,
-        `The designer is concerned about the living room, kitchen, storage, bathrooms, toilets and office.`,
+        `The following is a discussion between an architect, designer and their client. The architect and designer ask many questions to get a good understanding of the clients' needs. The architect asks questions to learn about the style of the house, roof, garden, number of stories and budget.`,
+        `The designer asks about the rooms.`,
         // `The Architect wants to know how to design the project, like number of bedrooms, public spaces, kitchen, style and amenities.`,
         // `The following is a conversation between an architect and his client. The architect wants to know everything about the project requirements.`,
         // `Here are some questions that the architect might ask:`,
@@ -99,7 +113,7 @@ export const gpt3Say = (discussion_id) => {
         // what is the budget
         `The discussion transcript:`,
         discussion,
-        // `architect:`,
+        `${speaker}:`,
       ].join("\n");
 
       log.info("openAI say:", prompt);
@@ -114,13 +128,14 @@ export const gpt3Say = (discussion_id) => {
         bestOf: 1,
         n: 1,
         stream: false,
-        // stop: ["client:","Client:"],
+        stop: ["client:","Client:"],
       });
     })
     .then((response) => {
       log.info("openAI response:", response.data);
 
-      const responseArray = parseResponse(response.data.choices[0].text);
+      // add speaker to response
+      const responseArray = parseResponse(`${speaker}: ${response.data.choices[0].text}`);
       return responseArray;
     })
     .catch((e) => console.log(e));

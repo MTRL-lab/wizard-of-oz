@@ -28,21 +28,22 @@ export const gpt3Say = (discussion_id) => {
     })
     .then((discussion) => {
       const prompt = [
-        `The following is a conversation between an architect and his client. The architect wants to know everything about the project requirements. Here are some questions that the architect might ask:`,
-        `- What kind of project did you have in mind?`,
-        // `Why do you want to design and build a new home?`,
-        `- What major goals do you want to achieve?`,
-        `- Have you selected a site for this project?`,
+        `The following is a conversation between an architect and his client. The architect wants to know everything about the project requirements. `,
+        // `Here are some questions that the architect might ask:`,
+        // `- What kind of project did you have in mind?`,
+        // // `Why do you want to design and build a new home?`,
+        // `- What major goals do you want to achieve?`,
+        // `- Have you selected a site for this project?`,
         // `Are there views or landscape features you want taken into consideration when siting the building?`,
-        `- What is your budget for this project and how flexible is that budget?`,
-        `- How will you be using the spaces in this building?`,
+        // `- What is your budget for this project and how flexible is that budget?`,
+        // `- How will you be using the spaces in this building?`,
         // `- Do you work from home?`,
         // `- Do you entertain people often?`,
         // `- Where do family spend most of their time?`,
-        `- Do you have strong feelings/ideas about design?`,
+        // `- Do you have strong feelings/ideas about design?`,
         // `Are there particular architectural features you’d like included in the building?`,
         // `In terms of design layouts, do you prefer open concept design or clearly delineated spaces?`,
-        `- Do you have preferences on building materials?`,
+        // `- Do you have preferences on building materials?`,
         // `What kind of aesthetic are you looking to achieve in the building?`,
         // `- Do you want to take advantage of natural light as much as possible?`,
         // `What are your biggest concerns/worries in undertaking this project?`,
@@ -61,15 +62,15 @@ export const gpt3Say = (discussion_id) => {
       return openai.complete({
         engine: "davinci",
         prompt,
-        maxTokens: 200,
+        maxTokens: 170,
         temperature: 0.9,
         topP: 1,
-        presencePenalty: 0.6,
-        frequencyPenalty: 0.5,
+        presencePenalty: 0.1,
+        frequencyPenalty: 0.6,
         bestOf: 1,
         n: 1,
         stream: false,
-        stop: ["\n", "Architect:", "Client:"],
+        stop: ["client:","Client:"],
       });
     })
     .then((response) => {
@@ -101,13 +102,13 @@ export const gpt3Brief = (discussion_id) => {
     log.info("openAI brief:", prompt);
     return openai
       .complete({
-        engine: "davinci", //-instruct-beta
+        engine: "davinci-instruct-beta", //-instruct-beta
         prompt,
-        maxTokens: 500,
-        temperature: 0,
+        maxTokens: 1000,
+        temperature: 0.16,
         topP: 1,
-        presencePenalty: 0,
-        frequencyPenalty: 1,
+        presencePenalty: 0.38,
+        frequencyPenalty: 0.35,
         bestOf: 1,
         n: 1,
         stream: false,

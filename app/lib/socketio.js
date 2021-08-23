@@ -145,16 +145,16 @@ const initSocketIO = (io) => {
 
 
         socket.on("clientWriting", () => {
-            io.emit('clientWriting')
+            io.to(socket.id).emit('clientWriting')
         })
         socket.on("operatorWriting", () => {
-            io.emit('operatorWriting')
+            io.to(socket.id).emit('operatorWriting')
         })
         socket.on("clientConnected", ({ language }) => {
             const discussion_id = moment().unix()
 
             log.debug('discussion id', discussion_id)
-            io.emit('start', { discussion_id, language })
+            io.to(socket.id).emit('start', { discussion_id, language })
 
             loadDefaultText(language)
                 .then(() => {
@@ -173,18 +173,10 @@ const initSocketIO = (io) => {
                             discussion_id,
                             message: text.hello2,
                             language,
-                            username: 'designer'
+                            username: 'architect'
                         })
                     }, 1000)
                     
-                    setTimeout(() => {
-                        operatorSay(io, socket, {
-                            discussion_id,
-                            message: text.hello3,
-                            language,
-                            username: 'architect'
-                        })
-                    }, 2000)
                 })
         })
     });

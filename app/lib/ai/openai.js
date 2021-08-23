@@ -6,7 +6,7 @@ import { Message } from "../../models/index.js";
 const apiKey = config.get("openai.key");
 const openai = new OpenAI(apiKey);
 
-const userNames = ['architect','designer'];
+const userNames = ['architect'];
 
 const parseDiscussion = (messages, limit = 0) =>
   messages
@@ -14,7 +14,7 @@ const parseDiscussion = (messages, limit = 0) =>
       const json = JSON.parse(message.get("msg"));
       return `${message.get("username")}: ${json.message}`;
     })
-    .slice(limit ? -limit : 0)
+    // .slice(limit ? -limit : 0)
     .join("\n")
     .replace("\n\n", "\n");
 
@@ -27,7 +27,7 @@ const getDiscussion = (discussion_id) => {
 };
 
 const parseResponse = (text) => {
-  const parts = text.split("\n");
+  const parts = text.split(/\n./);
 
   // junk flag to ignore text that is not relevant
   var junk = false;
@@ -83,32 +83,8 @@ export const gpt3Say = (discussion_id) => {
     .then((discussion) => {
       
       const prompt = [
-        `The following is a discussion between an architect, designer and their client. The architect and designer ask many questions to get a good understanding of the clients' needs. The architect asks questions to learn about the style of the house, roof, garden, number of stories and budget.`,
-        `The designer asks about the rooms.`,
-        // `The Architect wants to know how to design the project, like number of bedrooms, public spaces, kitchen, style and amenities.`,
-        // `The following is a conversation between an architect and his client. The architect wants to know everything about the project requirements.`,
-        // `Here are some questions that the architect might ask:`,
-        // `- What kind of project did you have in mind?`,
-        // `Why do you want to design and build a new home?`,
-        // `- What major goals do you want to achieve?`,
-        // `- Have you selected a site for this project?`,
-        // `Are there views or landscape features you want taken into consideration when siting the building?`,
-        // `- What is your budget for this project and how flexible is that budget?`,
-        // `- How will you be using the spaces in this building?`,
-        // `- Do you work from home?`,
-        // `- Do you entertain people often?`,
-        // `- Where do family spend most of their time?`,
-        // `- Do you have strong feelings/ideas about design?`,
-        // `Are there particular architectural features you’d like included in the building?`,
-        // `In terms of design layouts, do you prefer open concept design or clearly delineated spaces?`,
-        // `- Do you have preferences on building materials?`,
-        // `What kind of aesthetic are you looking to achieve in the building?`,
-        // `- Do you want to take advantage of natural light as much as possible?`,
-        // `What are your biggest concerns/worries in undertaking this project?`,
-        // `Does the design of the building need to incorporate spaces for equipment, unusual or large pieces of furniture, or artwork?`,
-        // `Will this project include outbuildings or ancillary structures like storage buildings, pools, or guest quarters?`,
-        // `Does project construction need to take into account persons with disabilities, mobility issues, or allergies?`,
-        // `How long do you plan to own this building?`,
+        `The following is a discussion between an architect and his client. The architect ask many questions to get a understanding the design project.The architect is helpful, clever, goes into details and helps the client to express his needs.`,
+        `The architect needs to know which rooms the client needs, who is going to use them, what is the style the client likes.`,
 
         // what is the budget
         `The discussion transcript:`,
@@ -148,7 +124,7 @@ export const gpt3Brief = (discussion_id) => {
     const prompt = [
       `Here is a discussion between an architect and his client:`,
       discussion,
-      `Please make a list summarizing the design requirements from the dialogue:`,
+      `\n-----\nMake a list summarizing the design requirements from the discussion:`,
     ].join("\n");
 
     log.info("openAI brief:", prompt);

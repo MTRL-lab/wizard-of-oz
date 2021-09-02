@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Welcome, Chat, ChatLog, Operator } from "./screens";
+import { Welcome, Chat, ChatLog, Operator, Car } from "./screens";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -9,6 +9,8 @@ const indexRoutes = [
   // { path: '/wizard/', component: Wizard },
   { path: "/chat/", component: Chat ,exact: true },
   { path: "/bot/", component: Chat ,exact: true, bot:'gpt3' },
+  { path: "/car/", component: Car ,exact: true },
+
 
   { path: "/chatlog/:discussion_id", component: ChatLog ,exact: false},
   { path: "/chatlog/", component: ChatLog ,exact: false},

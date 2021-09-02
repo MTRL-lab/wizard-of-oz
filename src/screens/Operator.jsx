@@ -74,6 +74,7 @@ export default class Operator extends Component {
       message,
       discussion_id,
       language,
+      username: "architect",
     };
     this.socket.emit("operatorSay", json);
   };
@@ -84,7 +85,8 @@ export default class Operator extends Component {
     this.socket.emit("operatorSay", {
       discussion_id,
       message,
-      language
+      language,
+      
     });
   };
 
@@ -93,7 +95,7 @@ export default class Operator extends Component {
   };
 
   componentDidMount() {
-    this.socket.on("start", (data) => {
+    this.socket.on("startOperator", (data) => {
       const { messages } = this.state;
 
       const { discussion_id, language } = data;

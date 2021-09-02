@@ -43,7 +43,9 @@ const operatorSay = (io, socket, json) => {
                 })
             })
             .then(message => {
-                io.to(socket.id).emit('operatorSaid', Message.toChatJson(message))
+                const json = Message.toChatJson(message)
+                log.debug('operatorSay',message.discussion_id, json)
+                io.to(message.discussion_id).emit('operatorSaid', json)
             })
 
     } catch (e) {
@@ -57,11 +59,12 @@ const initSocketIO = (io) => {
     io.on("connection", socket => {
 
         socket.onAny((eventName, ...args) => {
-            log.silly('socket', eventName, args)
+            log.debug('socket', eventName, args)
         });
 
         socket.on("operatorSay", (json) => {
-            operatorSay(io, socket, json, 'operator')
+            console.log(json)
+            operatorSay(io, socket, json)
         })
 
         socket.on("clientSay", (json) => {
@@ -73,14 +76,15 @@ const initSocketIO = (io) => {
                 username: 'client'
             }).then(message => {
                 const json = Message.toChatJson(message)
-                io.to(socket.id).emit('clientSaid',json)
+                log.debug('clientSay', json.discussion_id, json)
+                io.to(json.discussion_id).emit('clientSaid',json)
                 return message;
             }).then(() => {
                 //Initiate open AI call
                 if (json.bot==='gpt3'){
                     return say(json.discussion_id)
                         .then(responseTexts => {
-                            log.silly('responseTexts', responseTexts)
+                            log.debug('responseTexts', responseTexts)
 
                             responseTexts.forEach((responseText,i) => {
                             
@@ -110,7 +114,7 @@ const initSocketIO = (io) => {
             speechToText(json.audio, json.language)
                 .then(text => {
 
-                    log.silly('Got message', text)
+                    log.debug('Got message', text)
 
                     if (!text) {
                         throw new Error('No text response')
@@ -126,7 +130,7 @@ const initSocketIO = (io) => {
                     })
                 })
                 .then(message => {
-                    io.to(socket.id).emit('clientSaid', Message.toChatJson(message))
+                    io.to(json.discussion_id).emit('clientSaid', Message.toChatJson(message))
                     const audioPath = path.join(path.resolve(''), "uploads", `audio${message.id}.webm`);
                     return writeFile(audioPath, bufferValue)
 
@@ -144,17 +148,20 @@ const initSocketIO = (io) => {
 
 
 
-        socket.on("clientWriting", () => {
-            io.to(socket.id).emit('clientWriting')
+        socket.on("clientWriting", (json) => {
+            // io.to(json.discussion_id).emit('clientWriting')
         })
-        socket.on("operatorWriting", () => {
-            io.to(socket.id).emit('operatorWriting')
+        socket.on("operatorWriting", (json) => {
+            // io.to(json.discussion_id).emit('operatorWriting')
         })
         socket.on("clientConnected", ({ language }) => {
             const discussion_id = moment().unix()
 
             log.debug('discussion id', discussion_id)
-            io.to(socket.id).emit('start', { discussion_id, language })
+            socket.join(discussion_id);
+            io.to(discussion_id).emit('start', { discussion_id, language })
+            io.emit('startOperator', { discussion_id, language })
+            
 
             loadDefaultText(language)
                 .then(() => {

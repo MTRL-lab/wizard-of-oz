@@ -52,6 +52,7 @@
         "react-native-vector-icons": "^8.1.0",
         "react-router-dom": "^5.2.0",
         "react-scripts": "4.0.3",
+        "react-tag-autocomplete": "^6.3.0",
         "react-textarea-autosize": "^8.3.2",
         "sequelize": "^6.6.2",
         "sequelize-cli": "^6.2.0",

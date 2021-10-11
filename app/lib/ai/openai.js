@@ -83,7 +83,7 @@ export const gpt3Say = (discussion_id) => {
     .then((discussion) => {
       
       const prompt = [
-        `The following is a discussion between an architect and his client. The architect ask many questions to get a understanding the design project.The architect is helpful, clever, goes into details and helps the client to express his needs.`,
+        `The following is a discussion between an architect and his client. The architect asks many questions to get a understanding the design project. The architect is helpful, clever, goes into details and helps the client to express his needs.`,
         `The architect needs to know which rooms the client needs, who is going to use them, what is the style the client likes.`,
 
         // what is the budget

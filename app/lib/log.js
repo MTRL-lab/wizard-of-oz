@@ -31,7 +31,7 @@ const logger = winston.createLogger({
     format: alignedWithColorsAndTime,
     transports: [
         new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-        new winston.transports.File({ filename: 'logs/combined.log' }),
+        new winston.transports.File({ filename: 'logs/combined.log',level: 'silly' }),
         new winston.transports.Console()
     ],
     exceptionHandlers: [

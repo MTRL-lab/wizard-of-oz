@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { db } from "./db.js";
 import wrapper from "./route_wrapper.js";
+import { textToSpeech } from '../lib/voice.js'
 import { Consent, Message, Brief, Tag } from "../models/index.js";
 import { brief } from "./ai.js";
 
@@ -35,12 +36,12 @@ api.get(
 api.get(
   "/sessions/",
   wrapper(() => {
-      // const query = `SELECT discussion_id, count(*) as num, 
-      // min(createdAt) as start, max(createdAt) as end ,
-      // max(createdAt) - min(createdAt) as ra 
-      // FROM Messages 
-      // WHERE discussion_id !=""
-      // GROUP BY discussion_id`;
+    // const query = `SELECT discussion_id, count(*) as num, 
+    // min(createdAt) as start, max(createdAt) as end ,
+    // max(createdAt) - min(createdAt) as ra 
+    // FROM Messages 
+    // WHERE discussion_id !=""
+    // GROUP BY discussion_id`;
 
     const query = `select 
         msgs.discussion_id,
@@ -98,7 +99,23 @@ api.get(
 api.get(
   "/brief/",
   wrapper((req) => {
-    return req.query.discussion_id ? brief(req.query.discussion_id) : null;
+
+    const { discussion_id } = req.query
+
+    return Message.findAll({
+      where: {
+        discussion_id
+      },
+    })
+      .then(messages => {
+        //remove introduction
+        messages.splice(0, 3)
+        if (!messages.length) {
+          throw "No Messages"
+        }
+        
+        return brief(messages)
+      })
   })
 );
 
@@ -111,7 +128,7 @@ api.get(
   "/tag/",
   wrapper((req) => {
     const { messageId } = req.query;
-    return Tag.findAll({ where:{messageId} });
+    return Tag.findAll({ where: { messageId } });
   })
 );
 api.post(
@@ -131,5 +148,27 @@ api.delete(
     );
   })
 );
+
+
+api.get("/voice/:id", wrapper((req) => {
+
+  const { id } = req.params;
+
+  return Message.findAll({
+    where: {
+      id,
+    },
+  })
+    .then(message => {
+      if (!message[0]) {
+        throw Error('Not found')
+      }
+      const json = JSON.parse(message[0].msg)
+      return textToSpeech(json.message, json.language)
+    })
+    .then(file => {
+      return ({ ok: 'ok', file })
+    })
+}))
 
 export default api;

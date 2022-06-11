@@ -30,7 +30,7 @@ export default class ChatInput extends Component {
   handleChange = (event) => {
     const { value } = event.target;
     this.setState({
-      value,
+      value:value.replace("\n",''),
     });
   };
   

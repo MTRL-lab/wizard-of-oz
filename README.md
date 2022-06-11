@@ -74,7 +74,7 @@ npm start
 Run the React development server in parallel:
 
 ```
-npm start-client
+npm run client
 ```
 
 ## License and Acknowledgments

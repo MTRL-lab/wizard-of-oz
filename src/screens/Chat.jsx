@@ -4,14 +4,10 @@ import { io } from "socket.io-client";
 import { Modal, Button } from "react-bootstrap";
 
 import { Brief } from "../components/Brief";
-import {
-  ChatDiscussion,
-  ChatInput,
-  VoiceInput,
-} from "../components/ChatDiscussion";
+import { ChatDiscussion, ChatInput, } from "../components/ChatDiscussion";
 import { ChatWrapper } from "../components/ChatWrapper";
 
-import { url } from "../lib/api";
+import api, { url } from "../lib/api";
 import logo from "./../components/ChatDiscussion/logo.png";
 
 const connectMessage = () => {
@@ -35,6 +31,7 @@ export default class Chat extends Component {
     showModal: true,
     language: null,
     experimentActive: true,
+    name: null
   };
 
   isPlaying = false;
@@ -43,7 +40,7 @@ export default class Chat extends Component {
     super(props);
 
     this.socket = io(url);
-    this.socket.on("connect", () => {});
+    this.socket.on("connect", () => { });
   }
 
   // Initialize socket events
@@ -77,13 +74,16 @@ export default class Chat extends Component {
       console.log("Operator said", message);
 
       messages.push(message);
-      audio.push(`${url}/${message.audio}`);
+      api.get(`/voice/${message.id}`)
+        .then(data => {
+          audio.push(`${url}/${data.data.file}`);
+          this.setState({ audio }, () => this.playAudio())
+        })
 
       if (messages.length > maxMessages) this.experimentDone();
 
       this.setState({
         messages,
-        audio,
         operatorWriting: false,
         clientWriting: false,
         sending: false,
@@ -113,32 +113,21 @@ export default class Chat extends Component {
     this.socket.emit("clientWriting");
   };
 
-  handleSend = (messageToServer) => {
+  handleSend = (message) => {
     const { bot } = this.props;
-    const { discussion_id, language } = this.state;
+    const { discussion_id, language,name } = this.state;
 
+    this.clearAudio();
+    const cleanMessage = message.replace("\n",'')
     this.socket.emit("clientSay", {
+      name,
       bot,
       discussion_id,
-      message: messageToServer,
+      message:cleanMessage,
       language,
     });
   };
 
-  handleSendRecording = (recordedBase64) => {
-    const { discussion_id, language } = this.state;
-    this.setState({ sending: true });
-
-    const json = {
-      discussion_id,
-      audio: recordedBase64,
-      language,
-    };
-
-    console.log("Send clientVoice");
-    this.socket.emit("clientVoice", json);
-    return true;
-  };
 
   playAudio = () => {
     if (!this.isPlaying) {
@@ -152,23 +141,33 @@ export default class Chat extends Component {
   audioPlayEnded = () => {
     const { audio } = this.state;
     this.isPlaying = false;
+
     if (!audio.length) {
       return;
     }
     const currentAudio = audio.shift();
-
     this.setState({ currentAudio });
   };
 
   clearAudio = () => {
+    this.isPlaying = false;
     this.setState({ audio: [], currentAudio: null });
   };
 
   chooseLanguage = (language) => {
+    const { name } = this.state
+
+    if (!name || name.length < 3) {
+      alert('Name is too short')
+      return
+    }
     this.setState({ language, showModal: false });
     // create session and start discussion
-    this.socket.emit("clientConnected", { language });
+    this.socket.emit("clientConnected", { name,language });
   };
+  updateName = (e) => {
+    this.setState({ name: e.target.value })
+  }
 
   render() {
     const {
@@ -177,19 +176,23 @@ export default class Chat extends Component {
       clientWriting,
       operatorWriting,
       currentAudio,
-      record,
-      sending,
       showModal,
       experimentActive,
+      name
     } = this.state;
 
     return (
       <ChatWrapper>
         <Modal show={showModal}>
           <Modal.Header>
-            <Modal.Title>Choose Language</Modal.Title>
+            <Modal.Title>Hello!</Modal.Title>
           </Modal.Header>
-          <Modal.Body>What language you prefer?</Modal.Body>
+          <Modal.Body>
+            <div className="form-group">
+              <label htmlFor="exampleInputEmail1">What is your name?</label>
+              <input type="text" autoComplete="given-name" className="form-control" value={name} id="exampleInputEmail1" onChange={this.updateName} placeholder="First name" />
+            </div>
+          </Modal.Body>
           <Modal.Footer>
             <Button
               variant="primary"
@@ -232,8 +235,8 @@ export default class Chat extends Component {
             <div className="contact-profile">
               <img src={logo} alt="" />
               <p>Architecture bot</p>.
-              <small>The chat will conclude automatically in {maxMessages- messages.length} messages.</small>
-              <Button style={{float:"right"}}size="sm" variant="outline-danger" onClick={() => this.experimentDone()}>Finish chat</Button>
+              <small>The chat will conclude automatically in {maxMessages - messages.length} messages.</small>
+              <Button style={{ float: "right" }} size="sm" variant="outline-danger" onClick={() => this.experimentDone()}>Finish chat</Button>
             </div>
             <ChatDiscussion
               messages={messages}
@@ -248,11 +251,7 @@ export default class Chat extends Component {
                   updateKeyUp={this.updateKeyUp}
                 />
 
-                <VoiceInput
-                  sending={sending}
-                  record={record}
-                  handle={this.handleSendRecording}
-                />
+
               </div>
             </div>
           </Fragment>

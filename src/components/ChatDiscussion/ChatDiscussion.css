@@ -39,6 +39,7 @@
 .messages ul li.replies p {
     background: #f5f5f5;
     float: right;
+    max-width: calc(100% - 50px);
 }
 
 .messages ul li img {

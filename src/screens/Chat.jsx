@@ -234,9 +234,9 @@ export default class Chat extends Component {
           <Fragment>
             <div className="contact-profile">
               <img src={logo} alt="" />
-              <p>Architecture bot</p>.
-              <small>The chat will conclude automatically in {maxMessages - messages.length} messages.</small>
-              <Button style={{ float: "right" }} size="sm" variant="outline-danger" onClick={() => this.experimentDone()}>Finish chat</Button>
+              <p>Zaha-AI</p>  
+              <small>The chat concludes in {maxMessages - messages.length} messages.</small>
+              <Button style={{ float: "right",margin:10 }} size="sm" variant="outline-danger" onClick={() => this.experimentDone()}>Finish chat</Button>
             </div>
             <ChatDiscussion
               messages={messages}

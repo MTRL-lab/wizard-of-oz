@@ -104,10 +104,11 @@
     font-family: "proxima-nova", "Source Sans Pro", sans-serif;
     float: left;
     border: none;
-    width: calc(100% - 100px);
-    padding: 11px 32px 10px 8px;
+    width: calc(100% - 50px);
+    padding: 11px 8px 10px 8px;
     font-size: 0.8em;
     color: #32465a;
+    min-height:50px;
 }
 
 .content .message-input .wrap textarea:focus {

@@ -10,7 +10,9 @@ import { translate } from './translate.js'
 
 // The multi-purpose center can offer a variety of spaces for the community, offices, rehearsal rooms, warehouses, production spaces, workshops and studio spaces. A place for everyone!`
 
-const projectBackground = 'The Technical University of Munich is planning to build a new architecture school instead of the outdated electrical facility on Theresienstrasse. The building will host the architecture school and the design will be based on the preferences of the students and faculty. That’s why we want to ask you about your ideas for the new building.'
+// const projectBackground = 'The Technical University of Munich is planning to build a new architecture school instead of the outdated electrical facility on Theresienstrasse. The building will host the architecture school and the design will be based on the preferences of the students and faculty. That’s why we want to ask you about your ideas for the new building.'
+
+const projectBackground = 'We are planning a new villa for you and your family\'s future home. The building will have all standard amenities like a living room, kitchen, and bedrooms. However, we will also add some unique features that make this place special. That\'s why we want to ask you about your ideas for the new building.'
 
 const loadDefaultText = (lang) => {
     return Promise.all([

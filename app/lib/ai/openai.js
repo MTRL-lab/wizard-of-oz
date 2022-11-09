@@ -80,7 +80,10 @@ export const gpt3Say = (discussion_id) => {
             const prompt = [
         //         `The following is a discussion between an architect and her client. The architect shows a design of a commercial, culture and education center, that is 3000 square meters large, near Rosh Pina in Israel. The architect is very kind and asks the client how to improve the design.
         // ` +
-        `The following is a conversation between an architect and a client. The architect wants the client to express aesthetic, functional, and social preferences. The architect is very kind and professional.
+        // `The following is a conversation between an architect and a client. The architect wants the client to express aesthetic, functional, and social preferences. The architect is very kind and professional.
+        `The following is a chat transcript between an architect and a client. The architect wants the client to express aesthetic, functional, and social preferences. The architect is challenging the client with questions to get a better joint understanding of the requirements.
+   
+
         `,
         '------',
         'The discussion transcript:',

@@ -2,6 +2,7 @@ import { v2 } from '@google-cloud/translate'
 // import recorder from 'node-record-lpcm16';
 import sha1 from "sha1";
 import log from "./log.js";
+import path from 'path';
 import { access, writeFile, readFile } from "fs/promises";
 
 const { Translate } = v2
@@ -11,6 +12,7 @@ const translationClient = new Translate();
 
 export function translate(text, sourceLanguageCode, target) {
 
+    
     const lang = target.split('-')[0]
     const sourceLang =sourceLanguageCode.split('-')[0]
     // don't translate english
@@ -20,7 +22,7 @@ export function translate(text, sourceLanguageCode, target) {
     }
 
     const sha = sha1(`${text}_${sourceLanguageCode}_${target}`);
-    const fileName = `../upload/${sha}.tmp`;
+    const fileName = path.resolve(path.resolve(''), `uploads/${sha}.tmp`) ;
 
     return access(fileName)
         .then(() => {

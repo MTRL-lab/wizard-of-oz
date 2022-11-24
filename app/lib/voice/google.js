@@ -25,11 +25,21 @@ const support = {
       'stt': 'ar-XA',
       'ttsName': 'ar-XA-Wavenet-D'
   },
+  'de-DE': {
+    'tts': 'de-DE',
+    'stt': 'de-DE',
+    'ttsName': 'de-DE-Neural2-F'
+},
   'he-IL': {
       'tts': 'en-US',
       'stt': 'he-IL',
       'ttsName': 'en-US-Wavenet-C'
-  }
+  },
+  'es-ES': {
+    'tts': 'es-ES',
+    'stt': 'es-ES',
+    'ttsName': 'es-ES-Neural2-E'
+}
 };
 
 export const langCodeTts = (language) => {

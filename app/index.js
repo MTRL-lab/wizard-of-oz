@@ -10,7 +10,7 @@ import {
 } from './lib/db.js'
 import logger from './lib/log.js'
 import routes from './lib/routes.js'
-import videoRoutes from './lib/video_routes.js'
+// import videoRoutes from './lib/video_routes.js'
 
 
 const sessionConfig = config.get("session")

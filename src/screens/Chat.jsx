@@ -198,15 +198,15 @@ export default class Chat extends Component {
               variant="primary"
               onClick={() => this.chooseLanguage("en-US")}
             >
-              American English
+              English
             </Button>{" "}
             <Button
               variant="primary"
-              onClick={() => this.chooseLanguage("en-UK")}
+              onClick={() => this.chooseLanguage("es-ES")}
             >
-              British English
+              Español
             </Button>{" "}
-            {/* <Button
+            <Button
               variant="primary"
               onClick={() => this.chooseLanguage("de-DE")}
             >
@@ -217,7 +217,13 @@ export default class Chat extends Component {
               onClick={() => this.chooseLanguage("he-IL")}
             >
               עברית
-            </Button>{" "} */}
+            </Button>{" "}
+            <Button
+              variant="primary"
+              onClick={() => this.chooseLanguage("ar-XA")}
+            >
+              عربيه
+            </Button>{" "}
           </Modal.Footer>
         </Modal>
 

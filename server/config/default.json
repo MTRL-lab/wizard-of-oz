@@ -1,0 +1,67 @@
+{
+    "db": {
+        "username": "",
+        "password": "",
+        "database": "alexander",
+        "host": "127.0.0.1",
+        "dialect": "mysql",
+        "config": {
+            "dialect": "mysql",
+            "define": {
+                "charset": "utf8",
+                "collate": "utf8_general_ci",
+                "timestamps": true
+            }
+        }
+    },
+    "session": {
+        "secret": "change_me",
+        "resave": false,
+        "saveUninitialized": true,
+        "cookie": {
+            "secure": true
+        }
+    },
+    "httpServer": {
+        "port": 3002
+    },
+    "sequelizeRebuild": false,
+    "openai": {
+        "key": ""
+    },
+    "microsoft": {
+        "subscriptionKey":"",
+        "serviceRegion":""
+    },
+    "cors": {
+        "preflightContinue": false,
+        "optionsSuccessStatus": 204,
+        "credentials": true,
+        "cookie": {
+            "secure": false,
+            "maxAge": 31556952000
+        }
+    },
+    "uploadDir": "upload",
+    "socketIo": {
+        "cors": {
+            "origin": "http://localhost:3000",
+            "methods": [
+                "GET",
+                "POST"
+            ]
+        }
+    },
+    "log": {
+        "level": "warn"
+    },
+    "email": {
+        "auth": {
+            "user": "",
+            "pass": ""
+        }
+    },
+    "emailMessage": {
+        "replyTo":""
+    }
+}

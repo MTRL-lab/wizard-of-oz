@@ -1,0 +1,28 @@
+{
+    "hello": "Hello {username}, my name is Zaha and I am in the design team of the Bogotá project",
+    "introduction": "We aim to imporve the quality of life of the existing residents and attracting new residents through upgrading and renewing the old neighborhoods; the development of public space; Strengthening the urban continuum, while preserving the unique local characteristics with efficient public transportation and a high-quality, shaded and safe public space.",
+
+    "artifact1": "You liked this design. Let's discuss how to improve it.",
+
+    "artifact2": "What do you like about it? How should we improve it?",
+
+    "requirements":"Thank you for joining the project, I would like to know what are the problems that we should address in the plan?",
+
+    "where": "Where is the project located?",
+
+    "who": "Who will use this space?",
+
+    "what": "What would be the daily routine for the new space?",
+
+    "ideas": "What ideas do you have for the design?",
+
+    "materials": "Do you have specific materials in mind?",
+
+    "yes": "Yes",
+    "complicate": "This is complicated.",
+    "elaborate": "Interesting, can you elaborate?",
+    "more": "OK, can you tell me more?",
+    "understand": "Sorry, but I could not understand this",
+    "error": "I'm sorry, due to a technical error I couldn't understand what you said."
+
+}

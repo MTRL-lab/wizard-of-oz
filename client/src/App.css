@@ -1,0 +1,9 @@
+.filepond--credits{
+  display: none;
+}
+body {
+  background:#ddd
+}
+* {
+  font-family: 'Assistant', 'Roboto',sans-serif !important;
+}

@@ -1,0 +1,40 @@
+{
+  "name": "alexander-bot",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@google-cloud/speech": "^4.10.0",
+    "@google-cloud/text-to-speech": "^3.4.0",
+    "@google-cloud/translate": "^6.3.1",
+    "bluebird": "^3.7.2",
+    "config": "^3.3.7",
+    "cors": "^2.8.5",
+    "country-locale-map": "^1.8.11",
+    "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "express-session-sequelize": "^2.3.0",
+    "ical-generator": "^3.4.1",
+    "microsoft-cognitiveservices-speech-sdk": "^1.20.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "mysql2": "^2.3.3",
+    "nodemailer": "^6.7.2",
+    "openai-api": "^1.2.6",
+    "phone": "^3.1.32",
+    "sequelize": "^6.17.0",
+    "sequelize-hierarchy": "https://github.com/jsanta/sequelize-hierarchy",
+    "sha1": "^1.1.1",
+    "socket.io": "^4.4.1",
+    "twilio": "^3.84.1",
+    "uuid": "^8.3.2",
+    "winston": "^3.6.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.10.0",
+    "sequelize-cli": "^6.4.1"
+  }
+}
